@@ -8,6 +8,7 @@ interface LibraryItemProps {
   selected?: boolean
   onRecall: (entry: LibraryEntry) => void
   onAudition: (entry: LibraryEntry) => void
+  onExportJson: (entry: LibraryEntry) => void
   onRename: (id: string, newName: string) => void
   onDelete: (id: string) => void
   onDragStart?: (id: string) => void
@@ -19,6 +20,7 @@ export function LibraryItem({
   selected,
   onRecall,
   onAudition,
+  onExportJson,
   onRename,
   onDelete,
   onDragStart,
@@ -148,6 +150,16 @@ export function LibraryItem({
           }}
         >
           ▶
+        </IconBtn>
+        <IconBtn
+          ariaLabel="Export JSON"
+          title="Export this entry as a .sfx.json file"
+          onClick={(e) => {
+            e.stopPropagation()
+            onExportJson(entry)
+          }}
+        >
+          {'{}'}
         </IconBtn>
         <IconBtn
           ariaLabel="Delete"

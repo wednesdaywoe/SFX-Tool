@@ -770,6 +770,18 @@ function App() {
     [renderEntryBuffer],
   )
 
+  const handleExportEntryJson = useCallback((entry: LibraryEntry) => {
+    // Direct entry-level export: serializes the entry's stored spec without
+    // touching the parameter panel. Keeps `entry.spec` as the source of truth
+    // — no recall round-trip, so what's saved on disk matches the entry
+    // verbatim (same param values, same metadata).
+    downloadBlob(
+      JSON.stringify(entry.spec, null, 2),
+      `${entry.name}.sfx.json`,
+      'application/json',
+    )
+  }, [])
+
   const handleRenameEntry = useCallback(
     (entryId: string, newName: string) => {
       setLibrary((prev) => renameEntry(prev, entryId, newName))
@@ -1298,6 +1310,7 @@ function App() {
               onMoveEntryToFolder={handleMoveEntryToFolder}
               onRecallEntry={handleRecallEntry}
               onAuditionEntry={handleAuditionEntry}
+              onExportEntryJson={handleExportEntryJson}
               onRenameEntry={handleRenameEntry}
               onDeleteEntry={handleDeleteEntry}
               onExportLibrary={() => void handleExportLibrary()}

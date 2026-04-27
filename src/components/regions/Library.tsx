@@ -13,6 +13,7 @@ interface LibraryProps {
   onMoveEntryToFolder: (entryId: string, folderId: string | undefined) => void
   onRecallEntry: (entry: LibraryEntry) => void
   onAuditionEntry: (entry: LibraryEntry) => void
+  onExportEntryJson: (entry: LibraryEntry) => void
   onRenameEntry: (entryId: string, newName: string) => void
   onDeleteEntry: (entryId: string) => void
   onExportLibrary: () => void
@@ -30,6 +31,7 @@ export function Library(props: LibraryProps) {
     onMoveEntryToFolder,
     onRecallEntry,
     onAuditionEntry,
+    onExportEntryJson,
     onRenameEntry,
     onDeleteEntry,
     onExportLibrary,
@@ -186,6 +188,7 @@ export function Library(props: LibraryProps) {
                         selected={selectedEntryId === entry.id}
                         onRecall={onRecallEntry}
                         onAudition={onAuditionEntry}
+                        onExportJson={onExportEntryJson}
                         onRename={onRenameEntry}
                         onDelete={onDeleteEntry}
                         onDragStart={setDraggedId}
@@ -221,6 +224,7 @@ export function Library(props: LibraryProps) {
                     selected={selectedEntryId === entry.id}
                     onRecall={onRecallEntry}
                     onAudition={onAuditionEntry}
+                    onExportJson={onExportEntryJson}
                     onRename={onRenameEntry}
                     onDelete={onDeleteEntry}
                     onDragStart={setDraggedId}
