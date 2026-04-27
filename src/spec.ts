@@ -1044,7 +1044,7 @@ export function parseAtmosphericSpec(
     const v = raw[key]
     if (v === undefined) {
       warnings.push(
-        `Missing \`${key}\` — using preset default ${(baseline as Record<string, unknown>)[key]}`,
+        `Missing \`${key}\` — using preset default ${(baseline as unknown as Record<string, unknown>)[key]}`,
       )
       continue
     }

@@ -4,7 +4,7 @@ import type { DistortionConfig, DistortionCurve } from './types'
 export function makeDistortionCurve(
   curve: DistortionCurve,
   drive: number,
-): Float32Array {
+): Float32Array<ArrayBuffer> {
   const samples = 4096
   const out = new Float32Array(samples)
   // 1× to 100× input gain

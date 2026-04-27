@@ -177,8 +177,15 @@ function estimateLayerDuration(
   if (sourceEntry.spec.mode === 'percussive') {
     return sourceEntry.spec.params.decay_ms + 50
   }
-  const p = sourceEntry.spec.params
-  return Math.min(4000, p.amp_attack_ms + p.amp_decay_ms + p.amp_release_ms + 50)
+  if (sourceEntry.spec.mode === 'tonal') {
+    const p = sourceEntry.spec.params
+    return Math.min(
+      4000,
+      p.amp_attack_ms + p.amp_decay_ms + p.amp_release_ms + 50,
+    )
+  }
+  // atmospheric — use the spec hint or a 5s fallback
+  return sourceEntry.spec.duration_ms ?? 5000
 }
 
 export function timelineHeightFor(layerCount: number): number {

@@ -35,9 +35,12 @@ export function buildAtmosphericGraph(
   const numSamples = Math.max(1, Math.ceil(durationSeconds * sampleRate))
 
   // 1. Source layer — single mono buffer of noise + oscillators.
+  // Use getChannelData().set() rather than copyToChannel() because TS lib
+  // types `copyToChannel` as wanting Float32Array<ArrayBuffer> specifically,
+  // while our generators return the generic Float32Array<ArrayBufferLike>.
   const sourceData = generateAtmosphericSource(params, durationSeconds, sampleRate)
   const sourceBuffer = ctx.createBuffer(1, numSamples, sampleRate)
-  sourceBuffer.copyToChannel(sourceData, 0)
+  sourceBuffer.getChannelData(0).set(sourceData)
   const source = ctx.createBufferSource()
   source.buffer = sourceBuffer
   source.loop = options.loopSource
@@ -87,7 +90,7 @@ export function buildAtmosphericGraph(
 
   for (const mod of modBuffers) {
     const buf = ctx.createBuffer(1, mod.data.length, sampleRate)
-    buf.copyToChannel(mod.data, 0)
+    buf.getChannelData(0).set(mod.data)
     const node = ctx.createBufferSource()
     node.buffer = buf
     node.loop = mod.loop
