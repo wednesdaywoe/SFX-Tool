@@ -698,7 +698,7 @@ function DisabledPatternHint() {
           className="term"
           style={{
             fontSize: '13px',
-            color: '#4a7a5a',
+            color: '#6fa180',
             letterSpacing: 'normal',
             textTransform: 'none',
           }}
@@ -717,7 +717,7 @@ function SubGroupHeader({ children }: { children: ReactNode }) {
       className="pixel"
       style={{
         fontSize: '8px',
-        color: '#4a7a5a',
+        color: '#6fa180',
         letterSpacing: '0.18em',
         textTransform: 'uppercase',
         marginTop: '6px',

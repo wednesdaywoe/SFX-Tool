@@ -1,4 +1,5 @@
 import type { AtmosphericParams } from './dsp/atmospheric/types'
+import type { FXConfig } from './dsp/fx/types'
 
 export type AtmosphericPresetKey =
   | 'wind'
@@ -19,6 +20,9 @@ export interface AtmosphericPresetDefinition {
   description: string
   defaults: AtmosphericParams
   ranges: { [K in keyof AtmosphericParams]?: RangeFor<AtmosphericParams[K]> }
+  // Optional FX chain shipped with the preset. When absent, selection resets
+  // FX to DEFAULT_FX_CONFIG.
+  fx?: FXConfig
 }
 
 /* ─── 9 atmospheric presets ─────────────────────────────────────────────

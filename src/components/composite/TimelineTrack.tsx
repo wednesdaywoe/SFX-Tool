@@ -129,7 +129,7 @@ export function TimelineTrack({
             flex: 1,
             minWidth: 0,
             fontSize: '13px',
-            color: selected ? '#39ff7a' : '#a8d8b0',
+            color: selected ? '#39ff7a' : '#b8e0c0',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
@@ -251,7 +251,7 @@ function ModeTag({
           alignItems: 'center',
           justifyContent: 'center',
           background: '#0a1410',
-          color: '#4a7a5a',
+          color: '#6fa180',
           border: '1px solid #122418',
           flexShrink: 0,
         }}

@@ -44,7 +44,7 @@ export function FXSubsection({
             className="pixel"
             style={{
               fontSize: '8px',
-              color: enabled ? '#4a7a5a' : '#2d4a36',
+              color: enabled ? '#6fa180' : '#3d5a46',
               width: 10,
             }}
           >
@@ -56,7 +56,7 @@ export function FXSubsection({
               fontSize: '9px',
               letterSpacing: '0.18em',
               textTransform: 'uppercase',
-              color: enabled ? '#a8d8b0' : '#4a7a5a',
+              color: enabled ? '#b8e0c0' : '#6fa180',
             }}
           >
             {name}
@@ -65,7 +65,7 @@ export function FXSubsection({
             className="term"
             style={{
               fontSize: '13px',
-              color: enabled ? '#39ff7a' : '#4a7a5a',
+              color: enabled ? '#39ff7a' : '#6fa180',
               letterSpacing: 'normal',
               textTransform: 'none',
             }}

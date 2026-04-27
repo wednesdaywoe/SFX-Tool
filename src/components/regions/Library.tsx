@@ -145,16 +145,16 @@ export function Library(props: LibraryProps) {
             className="term"
             style={{
               fontSize: '14px',
-              color: '#4a7a5a',
+              color: '#6fa180',
               textAlign: 'center',
               lineHeight: 1.5,
             }}
           >
             no sounds saved
             <br />
-            <span style={{ color: '#2d4a36' }}>press save (S) to keep one</span>
+            <span style={{ color: '#3d5a46' }}>press save (S) to keep one</span>
             <br />
-            <span style={{ color: '#2d4a36' }}>
+            <span style={{ color: '#3d5a46' }}>
               persists across reloads
             </span>
           </p>
@@ -259,7 +259,7 @@ function HeaderButton({ onClick, title, children }: HeaderButtonProps) {
       style={{
         background: '#0a1410',
         border: '1px solid #1c3a26',
-        color: '#8fd0a0',
+        color: '#a8d8b0',
         fontSize: '8px',
         padding: '2px 8px',
         cursor: 'pointer',

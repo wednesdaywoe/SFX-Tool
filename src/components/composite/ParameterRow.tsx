@@ -69,7 +69,7 @@ export function ParameterRow({
         gap: '16px',
       }}
     >
-      <div style={{ fontSize: '12px', color: '#6fa180' }}>{label}</div>
+      <div style={{ fontSize: '12px', color: '#8fc0a0' }}>{label}</div>
       <div style={{ minWidth: 0, display: 'flex', alignItems: 'center' }}>
         {children}
       </div>
@@ -129,7 +129,7 @@ export function ParameterRow({
             {unit && (
               <span
                 className="pixel"
-                style={{ fontSize: '8px', color: '#4a7a5a', marginLeft: '4px' }}
+                style={{ fontSize: '8px', color: '#6fa180', marginLeft: '4px' }}
               >
                 {unit}
               </span>

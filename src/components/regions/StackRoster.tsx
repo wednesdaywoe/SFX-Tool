@@ -83,7 +83,7 @@ export function StackRoster({
         <span
           className="term"
           style={{
-            color: '#4a7a5a',
+            color: '#6fa180',
             fontSize: '13px',
             letterSpacing: 'normal',
             textTransform: 'none',
@@ -108,14 +108,14 @@ export function StackRoster({
             className="term"
             style={{
               fontSize: '14px',
-              color: '#4a7a5a',
+              color: '#6fa180',
               textAlign: 'center',
               lineHeight: 1.5,
             }}
           >
             empty stack
             <br />
-            <span style={{ color: '#2d4a36' }}>
+            <span style={{ color: '#3d5a46' }}>
               drag a library item here to compose
             </span>
           </p>

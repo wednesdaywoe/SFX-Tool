@@ -99,108 +99,6 @@ export function AuditionRow({
     >
       <div
         style={{
-          flex: 1,
-          minWidth: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: showStackView ? '6px' : 0,
-        }}
-      >
-        {showStackView && (
-          <StackPatternPanel
-            pattern={stackPattern}
-            onChange={onStackPatternChange}
-          />
-        )}
-        <div
-          className="waveform-container"
-          style={{ flex: 1, minWidth: 0, position: 'relative' }}
-        >
-        {showStackView ? (
-          <StackTimeline
-            stack={stack}
-            library={library}
-            selectedLayerId={selectedLayerId}
-            onSelectLayer={onSelectLayer}
-            onLayerOffsetChange={onLayerOffsetChange}
-            onLayerGainChange={onLayerGainChange}
-            onAddLayerFromLibrary={onAddLayerFromLibrary}
-            onToggleMute={onToggleLayerMute}
-            onToggleSolo={onToggleLayerSolo}
-            height={stackHeight}
-          />
-        ) : showAtmosphericView ? (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <RollingOscilloscope
-              analyser={atmosphericPlaying ? atmosphericAnalyser : null}
-              width={WAVE_WIDTH}
-              height={WAVE_HEIGHT}
-            />
-            <div
-              className="pixel"
-              style={{
-                position: 'absolute',
-                top: '6px',
-                left: '8px',
-                fontSize: '8px',
-                color: '#4a7a5a',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-              }}
-            >
-              {atmosphericPlaying ? 'LIVE · ATMOSPHERIC' : 'STOPPED'}
-            </div>
-            <div
-              className="pixel"
-              style={{
-                position: 'absolute',
-                bottom: '6px',
-                right: '8px',
-                fontSize: '8px',
-                color: '#4a7a5a',
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-              }}
-            >
-              {presetLabel.toUpperCase()}
-            </div>
-          </div>
-        ) : (
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <WaveformDisplay
-              buffer={buffer}
-              width={WAVE_WIDTH}
-              height={WAVE_HEIGHT}
-              showPlayhead={isPlaying}
-              playheadProgress={playheadProgress}
-              metadata={{
-                durationLabel: buffer ? durationLabel : undefined,
-                presetLabel: buffer ? presetLabel.toUpperCase() : undefined,
-              }}
-            />
-          </div>
-        )}
-        </div>
-      </div>
-
-      <div
-        style={{
           display: 'flex',
           flexDirection: 'column',
           gap: '4px',
@@ -213,7 +111,7 @@ export function AuditionRow({
           className="pixel"
           style={{
             fontSize: '8px',
-            color: '#4a7a5a',
+            color: '#6fa180',
             letterSpacing: '0.18em',
             textTransform: 'uppercase',
           }}
@@ -246,7 +144,7 @@ export function AuditionRow({
             className="term"
             style={{
               fontSize: '13px',
-              color: '#6fa180',
+              color: '#8fc0a0',
               marginTop: '2px',
             }}
           >
@@ -254,6 +152,7 @@ export function AuditionRow({
           </div>
         )}
       </div>
+
       {showAtmosphericView ? (
         <Button
           variant="trigger"
@@ -311,6 +210,108 @@ export function AuditionRow({
           disabled={!onExportJson}
           title="Download the current sound or stack spec as a .sfx.json file"
         />
+      </div>
+
+      <div
+        style={{
+          flex: 1,
+          minWidth: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: showStackView ? '6px' : 0,
+        }}
+      >
+        {showStackView && (
+          <StackPatternPanel
+            pattern={stackPattern}
+            onChange={onStackPatternChange}
+          />
+        )}
+        <div
+          className="waveform-container"
+          style={{ flex: 1, minWidth: 0, position: 'relative' }}
+        >
+        {showStackView ? (
+          <StackTimeline
+            stack={stack}
+            library={library}
+            selectedLayerId={selectedLayerId}
+            onSelectLayer={onSelectLayer}
+            onLayerOffsetChange={onLayerOffsetChange}
+            onLayerGainChange={onLayerGainChange}
+            onAddLayerFromLibrary={onAddLayerFromLibrary}
+            onToggleMute={onToggleLayerMute}
+            onToggleSolo={onToggleLayerSolo}
+            height={stackHeight}
+          />
+        ) : showAtmosphericView ? (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <RollingOscilloscope
+              analyser={atmosphericPlaying ? atmosphericAnalyser : null}
+              width={WAVE_WIDTH}
+              height={WAVE_HEIGHT}
+            />
+            <div
+              className="pixel"
+              style={{
+                position: 'absolute',
+                top: '6px',
+                left: '8px',
+                fontSize: '8px',
+                color: '#6fa180',
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+              }}
+            >
+              {atmosphericPlaying ? 'LIVE · ATMOSPHERIC' : 'STOPPED'}
+            </div>
+            <div
+              className="pixel"
+              style={{
+                position: 'absolute',
+                bottom: '6px',
+                right: '8px',
+                fontSize: '8px',
+                color: '#6fa180',
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+              }}
+            >
+              {presetLabel.toUpperCase()}
+            </div>
+          </div>
+        ) : (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <WaveformDisplay
+              buffer={buffer}
+              width={WAVE_WIDTH}
+              height={WAVE_HEIGHT}
+              showPlayhead={isPlaying}
+              playheadProgress={playheadProgress}
+              metadata={{
+                durationLabel: buffer ? durationLabel : undefined,
+                presetLabel: buffer ? presetLabel.toUpperCase() : undefined,
+              }}
+            />
+          </div>
+        )}
+        </div>
       </div>
     </section>
   )

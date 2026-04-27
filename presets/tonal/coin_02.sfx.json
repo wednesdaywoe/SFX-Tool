@@ -1,0 +1,53 @@
+{
+  "version": "3.0",
+  "kind": "sound",
+  "mode": "tonal",
+  "preset": "coin",
+  "params": {
+    "base_pitch_semitones": 9,
+    "osc_a_wave": "triangle",
+    "osc_a_level": 0.9,
+    "osc_b_wave": "triangle",
+    "osc_b_level": 0.4,
+    "osc_b_detune_cents": 0,
+    "sub_amount": 0.04,
+    "noise_type": "none",
+    "noise_amount": 0,
+    "filter_type": "lowpass",
+    "filter_freq_hz": 656,
+    "filter_q": 0.75,
+    "filter_env_amount": 0.05,
+    "filter_env_attack_ms": 23,
+    "filter_env_decay_ms": 12,
+    "amp_attack_ms": 9,
+    "amp_decay_ms": 144,
+    "amp_sustain": 0.07,
+    "amp_release_ms": 41,
+    "pitch_env_amount_oct": -0.02,
+    "pitch_env_attack_ms": 12,
+    "pitch_env_decay_ms": 18,
+    "lfo_rate_hz": 0.15,
+    "lfo_depth": 0.05,
+    "lfo_shape": "square",
+    "lfo_target": "off",
+    "gain": 0.75
+  },
+  "pattern": {
+    "enabled": true,
+    "steps": 3,
+    "interval_ms": 74,
+    "pitch_offsets": [
+      0,
+      12,
+      19
+    ],
+    "volume_decay": 0.7,
+    "direction": "forward"
+  },
+  "metadata": {
+    "tool": "sfx-tool",
+    "tool_version": "3.0.0",
+    "created": "2026-04-27T15:15:35.050Z",
+    "name": "coin_02"
+  }
+}

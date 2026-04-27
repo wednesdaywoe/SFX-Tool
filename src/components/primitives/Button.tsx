@@ -37,7 +37,7 @@ function variantStyle(
       },
       hintBg: '#050908',
       hintBorder: '#1c3a26',
-      hintColor: '#6fa180',
+      hintColor: '#8fc0a0',
     }
   }
   if (variant === 'randomize' || variant === 'primary') {
@@ -63,7 +63,7 @@ function variantStyle(
   return {
     style: {
       background: '#0a1410',
-      color: '#a8d8b0',
+      color: '#b8e0c0',
       fontFamily: "'Silkscreen', monospace",
       fontWeight: 'bold',
       letterSpacing: '0.12em',
@@ -73,7 +73,7 @@ function variantStyle(
     },
     hintBg: '#050908',
     hintBorder: '#1c3a26',
-    hintColor: '#6fa180',
+    hintColor: '#8fc0a0',
   }
 }
 

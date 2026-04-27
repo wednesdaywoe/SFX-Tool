@@ -108,7 +108,7 @@ function App() {
   const initialState = useMemo(() => loadState(), [])
 
   const [mode, setMode] = useState<Mode>(
-    initialState?.ui?.currentMode ?? 'percussive',
+    initialState?.ui?.currentMode ?? 'tonal',
   )
 
   const [percussivePresetKey, setPercussivePresetKey] =
@@ -317,19 +317,35 @@ function App() {
     (key: string) => {
       if (mode === 'percussive') {
         const k = key as PresetKey
-        if (!PRESETS[k]) return
+        const def = PRESETS[k]
+        if (!def) return
         setPercussivePresetKey(k)
-        setPercussiveParams(PRESETS[k].defaults)
+        setPercussiveParams(def.defaults)
+        setPercussivePattern(
+          def.pattern
+            ? { ...def.pattern, pitch_offsets: [...def.pattern.pitch_offsets], enabled: true }
+            : DEFAULT_PATTERN,
+        )
+        setPercussiveFX(def.fx ?? DEFAULT_FX_CONFIG)
       } else if (mode === 'tonal') {
         const k = key as TonalPresetKey
-        if (!TONAL_PRESETS[k]) return
+        const def = TONAL_PRESETS[k]
+        if (!def) return
         setTonalPresetKey(k)
-        setTonalParams(TONAL_PRESETS[k].defaults)
+        setTonalParams(def.defaults)
+        setTonalPattern(
+          def.pattern
+            ? { ...def.pattern, pitch_offsets: [...def.pattern.pitch_offsets], enabled: true }
+            : DEFAULT_PATTERN,
+        )
+        setTonalFX(def.fx ?? DEFAULT_FX_CONFIG)
       } else {
         const k = key as AtmosphericPresetKey
-        if (!ATMOSPHERIC_PRESETS[k]) return
+        const def = ATMOSPHERIC_PRESETS[k]
+        if (!def) return
         setAtmosphericPresetKey(k)
-        setAtmosphericParams(ATMOSPHERIC_PRESETS[k].defaults)
+        setAtmosphericParams(def.defaults)
+        setAtmosphericFX(def.fx ?? DEFAULT_FX_CONFIG)
       }
       setSelectedEntryId(null)
     },
@@ -1200,7 +1216,7 @@ function App() {
         : atmosphericPresetKey
 
   return (
-    <div className="crt-overlay h-full flex flex-col" style={{ background: '#06080a', color: '#c8e8d0' }}>
+    <div className="crt-overlay h-full flex flex-col" style={{ background: '#06080a', color: '#d4ecdc' }}>
       <TopBar
         mode={mode}
         onModeChange={setMode}

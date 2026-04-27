@@ -111,13 +111,13 @@ export function StackTimeline({
           <div>
             <p
               className="term"
-              style={{ fontSize: '14px', color: '#6fa180' }}
+              style={{ fontSize: '14px', color: '#8fc0a0' }}
             >
               empty stack
             </p>
             <p
               className="term"
-              style={{ fontSize: '13px', color: '#4a7a5a', marginTop: 4 }}
+              style={{ fontSize: '13px', color: '#6fa180', marginTop: 4 }}
             >
               drag a sound from the library here to compose
             </p>

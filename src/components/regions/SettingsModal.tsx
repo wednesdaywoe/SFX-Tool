@@ -110,13 +110,13 @@ export function SettingsModal({
               background: 'rgba(42, 10, 32, 0.3)',
             }}
           >
-            <div style={{ fontSize: '14px', color: '#c8e8d0', marginBottom: '4px' }}>
+            <div style={{ fontSize: '14px', color: '#d4ecdc', marginBottom: '4px' }}>
               Clear all data
             </div>
             <div
               style={{
                 fontSize: '12px',
-                color: '#6fa180',
+                color: '#8fc0a0',
                 marginBottom: '8px',
                 lineHeight: 1.5,
               }}
@@ -162,7 +162,7 @@ function Section({ title, children }: SectionProps) {
         style={{
           fontSize: '9px',
           letterSpacing: '0.2em',
-          color: '#6fa180',
+          color: '#8fc0a0',
           marginBottom: '8px',
           textTransform: 'uppercase',
         }}
@@ -209,7 +209,7 @@ function SettingRow({ label, help, checked, onToggle }: SettingRowProps) {
               left: checked ? 18 : 2,
               width: 14,
               height: 14,
-              background: checked ? '#39ff7a' : '#4a7a5a',
+              background: checked ? '#39ff7a' : '#6fa180',
               boxShadow: checked
                 ? '0 0 6px rgba(57, 255, 122, 0.8)'
                 : 'none',
@@ -218,12 +218,12 @@ function SettingRow({ label, help, checked, onToggle }: SettingRowProps) {
           />
         </button>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: '14px', color: '#c8e8d0' }}>{label}</div>
+          <div style={{ fontSize: '14px', color: '#d4ecdc' }}>{label}</div>
           {help && (
             <div
               style={{
                 fontSize: '12px',
-                color: '#6fa180',
+                color: '#8fc0a0',
                 marginTop: '4px',
                 lineHeight: 1.5,
               }}
@@ -255,7 +255,7 @@ function ActionButton({
       style={{
         background: '#0a1410',
         border: '1px solid #1c3a26',
-        color: '#8fd0a0',
+        color: '#a8d8b0',
         fontSize: '9px',
         padding: '6px 12px',
         cursor: 'pointer',

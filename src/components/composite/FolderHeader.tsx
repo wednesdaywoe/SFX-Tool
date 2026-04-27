@@ -64,7 +64,7 @@ export function FolderHeader({
       }}
     >
       <span
-        style={{ marginRight: '6px', color: '#4a7a5a', fontSize: '9px' }}
+        style={{ marginRight: '6px', color: '#6fa180', fontSize: '9px' }}
         aria-hidden="true"
       >
         {expanded ? '▼' : '▶'}
@@ -121,7 +121,7 @@ export function FolderHeader({
         <span
           className="term tabular"
           style={{
-            color: '#4a7a5a',
+            color: '#6fa180',
             fontSize: '13px',
             letterSpacing: 'normal',
             textTransform: 'none',

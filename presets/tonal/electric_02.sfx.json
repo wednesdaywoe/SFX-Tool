@@ -1,0 +1,51 @@
+{
+  "version": "3.0",
+  "kind": "sound",
+  "mode": "tonal",
+  "preset": "electric",
+  "params": {
+    "base_pitch_semitones": -22,
+    "osc_a_wave": "saw",
+    "osc_a_level": 0.96,
+    "osc_b_wave": "saw",
+    "osc_b_level": 0.36,
+    "osc_b_detune_cents": 50,
+    "sub_amount": 0.3,
+    "noise_type": "pink",
+    "noise_amount": 0.26,
+    "filter_type": "bandpass",
+    "filter_freq_hz": 6947,
+    "filter_q": 1.4,
+    "filter_env_amount": -0.51,
+    "filter_env_attack_ms": 357,
+    "filter_env_decay_ms": 59,
+    "amp_attack_ms": 484,
+    "amp_decay_ms": 38,
+    "amp_sustain": 0.58,
+    "amp_release_ms": 24,
+    "pitch_env_amount_oct": -1.86,
+    "pitch_env_attack_ms": 119,
+    "pitch_env_decay_ms": 11,
+    "lfo_rate_hz": 18.1,
+    "lfo_depth": 0.99,
+    "lfo_shape": "sine",
+    "lfo_target": "amp",
+    "gain": 0.89
+  },
+  "pattern": {
+    "enabled": true,
+    "steps": 1,
+    "interval_ms": 34,
+    "pitch_offsets": [
+      0
+    ],
+    "volume_decay": 0.11,
+    "direction": "forward"
+  },
+  "metadata": {
+    "tool": "sfx-tool",
+    "tool_version": "3.0.0",
+    "created": "2026-04-27T15:47:07.948Z",
+    "name": "electric_02"
+  }
+}

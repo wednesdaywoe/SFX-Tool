@@ -95,7 +95,7 @@ export function PatternPanel({ title, config, onChange }: PatternPanelProps) {
             className="term"
             style={{
               fontSize: '13px',
-              color: config.enabled ? '#39ff7a' : '#4a7a5a',
+              color: config.enabled ? '#39ff7a' : '#6fa180',
               textTransform: 'none',
               letterSpacing: 'normal',
             }}
@@ -235,7 +235,7 @@ export function PatternPanel({ title, config, onChange }: PatternPanelProps) {
               className="pixel"
               style={{
                 fontSize: '8px',
-                color: '#4a7a5a',
+                color: '#6fa180',
                 letterSpacing: '0.18em',
                 marginBottom: '8px',
                 textTransform: 'uppercase',

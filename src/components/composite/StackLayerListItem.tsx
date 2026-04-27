@@ -53,7 +53,7 @@ export function StackLayerListItem({
             className="term"
             style={{
               fontSize: '14px',
-              color: '#a8d8b0',
+              color: '#b8e0c0',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
@@ -65,7 +65,7 @@ export function StackLayerListItem({
             className="term tabular"
             style={{
               fontSize: '12px',
-              color: '#6fa180',
+              color: '#8fc0a0',
               display: 'flex',
               gap: '6px',
               alignItems: 'center',
@@ -166,7 +166,7 @@ function ModeTag({
           alignItems: 'center',
           justifyContent: 'center',
           background: '#0a1410',
-          color: '#4a7a5a',
+          color: '#6fa180',
           border: '1px solid #122418',
           flexShrink: 0,
         }}
@@ -203,7 +203,7 @@ function NumberField({
     decimals > 0 ? value.toFixed(decimals) : String(Math.round(value))
   return (
     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
-      <span style={{ color: '#4a7a5a' }}>{label}</span>
+      <span style={{ color: '#6fa180' }}>{label}</span>
       <input
         type="number"
         value={display}
@@ -220,7 +220,7 @@ function NumberField({
           background: 'transparent',
           border: '1px solid transparent',
           padding: '0 4px',
-          color: '#c8e8d0',
+          color: '#d4ecdc',
           fontFamily: "'VT323', monospace",
           fontSize: '13px',
           fontVariantNumeric: 'tabular-nums',
@@ -229,7 +229,7 @@ function NumberField({
         onFocus={(e) => (e.currentTarget.style.borderColor = '#39ff7a')}
         onBlur={(e) => (e.currentTarget.style.borderColor = 'transparent')}
       />
-      {unit && <span style={{ color: '#4a7a5a' }}>{unit}</span>}
+      {unit && <span style={{ color: '#6fa180' }}>{unit}</span>}
     </span>
   )
 }

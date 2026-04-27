@@ -34,7 +34,7 @@ export function LayerExpansion({
         style={{
           padding: '4px 0 6px',
           fontSize: '8px',
-          color: '#6fa180',
+          color: '#8fc0a0',
           letterSpacing: '0.18em',
           textTransform: 'uppercase',
         }}

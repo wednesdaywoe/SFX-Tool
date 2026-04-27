@@ -146,7 +146,7 @@ function SignalFlow({ stages }: { stages: string[] }) {
           >
             <span style={{ color }}>{upper}</span>
             {i < stages.length - 1 && (
-              <span style={{ color: '#2d4a36' }}>▶</span>
+              <span style={{ color: '#3d5a46' }}>▶</span>
             )}
           </span>
         )

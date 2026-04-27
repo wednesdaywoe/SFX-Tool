@@ -55,7 +55,7 @@ export function PatternStepChip({
     >
       <span
         className="pixel"
-        style={{ fontSize: '7px', color: '#4a7a5a', letterSpacing: '0.18em' }}
+        style={{ fontSize: '7px', color: '#6fa180', letterSpacing: '0.18em' }}
       >
         {index + 1}
       </span>

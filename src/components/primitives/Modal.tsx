@@ -86,7 +86,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
               height: 18,
               border: '1px solid #1c3a26',
               background: '#050908',
-              color: '#6fa180',
+              color: '#8fc0a0',
               fontFamily: "'Silkscreen', monospace",
               fontSize: '10px',
               cursor: 'pointer',
@@ -98,7 +98,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
         </div>
         <div
           className="flex-1 overflow-y-auto px-5 py-4"
-          style={{ color: '#c8e8d0' }}
+          style={{ color: '#d4ecdc' }}
         >
           {children}
         </div>

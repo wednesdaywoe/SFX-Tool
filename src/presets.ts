@@ -1,4 +1,6 @@
 import type { PercussiveParams } from './dsp/types'
+import type { PatternConfig } from './dsp/pattern/types'
+import type { FXConfig } from './dsp/fx/types'
 
 export type PresetKey =
   | 'click'
@@ -27,6 +29,13 @@ export interface PresetDefinition {
   ranges: {
     [K in keyof PercussiveParams]?: RangeFor<PercussiveParams[K]>
   }
+  // Optional pattern shipped with the preset. When set, selecting this preset
+  // also applies this pattern (with `enabled: true`); when absent, selection
+  // resets pattern to default.
+  pattern?: Omit<PatternConfig, 'enabled'>
+  // Optional FX chain shipped with the preset. When absent, selection resets
+  // FX to DEFAULT_FX_CONFIG.
+  fx?: FXConfig
 }
 
 export const PRESETS: Record<PresetKey, PresetDefinition> = {

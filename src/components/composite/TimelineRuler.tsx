@@ -46,7 +46,7 @@ export function TimelineRuler({
           alignItems: 'center',
           padding: '0 8px',
           fontSize: '8px',
-          color: '#4a7a5a',
+          color: '#6fa180',
           letterSpacing: '0.18em',
           background: '#050908',
           borderRight: '1px solid #0a1410',
@@ -78,7 +78,7 @@ export function TimelineRuler({
                 top: 2,
                 left: t.left + 4,
                 fontSize: '11px',
-                color: t.isAnchor ? '#39ff7a' : '#4a7a5a',
+                color: t.isAnchor ? '#39ff7a' : '#6fa180',
               }}
             >
               {t.ms}

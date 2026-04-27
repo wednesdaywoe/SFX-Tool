@@ -21,10 +21,10 @@ export function AboutModal({ isOpen, onClose }: AboutModalProps) {
         </div>
 
         <p className="text-sm text-stone-300 leading-relaxed">
-          A foraging-style synth for short game SFX. Two synthesis modes
-          (percussive + tonal), a render-time pattern feature for repeats and
+          A foraging-style synth for authoring game sound effects. Three synthesis modes
+          (percussive + tonal + atmospheric), a render-time pattern feature for repeats and
           arpeggios, and multichannel stacks for composing layered sounds.
-          Library is folder-organized and persists across sessions.
+          Library is folder-organized and persists across sessions. Save your sounds as WAV and JSON.
         </p>
 
         <section>

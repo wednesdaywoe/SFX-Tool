@@ -118,7 +118,7 @@ export function WaveformDisplay({
                 top: '6px',
                 left: '8px',
                 fontSize: '8px',
-                color: '#4a7a5a',
+                color: '#6fa180',
                 letterSpacing: '0.15em',
                 textTransform: 'uppercase',
               }}
@@ -134,7 +134,7 @@ export function WaveformDisplay({
                 bottom: '6px',
                 right: '8px',
                 fontSize: '8px',
-                color: '#4a7a5a',
+                color: '#6fa180',
                 letterSpacing: '0.15em',
                 textTransform: 'uppercase',
               }}

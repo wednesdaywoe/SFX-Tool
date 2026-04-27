@@ -52,7 +52,7 @@ export function TopBar({
         </span>
         <span
           className="pixel"
-          style={{ fontSize: '9px', color: '#4a7a5a' }}
+          style={{ fontSize: '9px', color: '#6fa180' }}
         >
           V{TOOL_VERSION}
         </span>
@@ -61,18 +61,21 @@ export function TopBar({
       <div style={{ display: 'flex' }}>
         <ModePill
           label="Percussive"
+          variant="percussive"
           active={mode === 'percussive'}
           onClick={() => onModeChange('percussive')}
           title="Short impacts: clicks, taps, thuds, clanks"
         />
         <ModePill
           label="Tonal"
+          variant="tonal"
           active={mode === 'tonal'}
           onClick={() => onModeChange('tonal')}
           title="Pitched/sustained sounds — laser, coin, beep, jump, whoosh, magic, electric"
         />
         <ModePill
           label="Atmospheric"
+          variant="atmospheric"
           active={mode === 'atmospheric'}
           onClick={() => onModeChange('atmospheric')}
           title="Continuous evolving textures — wind, rain, drone, glitch (v3)"
@@ -89,7 +92,7 @@ export function TopBar({
           style={{
             background: 'none',
             border: 'none',
-            color: '#6fa180',
+            color: '#8fc0a0',
             fontSize: '9px',
             cursor: 'pointer',
             letterSpacing: '0.15em',
@@ -106,7 +109,7 @@ export function TopBar({
           style={{
             background: 'none',
             border: 'none',
-            color: '#6fa180',
+            color: '#8fc0a0',
             fontSize: '11px',
             cursor: 'pointer',
           }}
@@ -120,6 +123,7 @@ export function TopBar({
 
 interface ModePillProps {
   label: string
+  variant?: 'percussive' | 'tonal' | 'atmospheric'
   active: boolean
   disabled?: boolean
   soon?: boolean
@@ -129,13 +133,14 @@ interface ModePillProps {
 
 function ModePill({
   label,
+  variant,
   active,
   disabled,
   soon,
   title,
   onClick,
 }: ModePillProps) {
-  const className = `mode-pill ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}`
+  const className = `mode-pill ${variant ?? ''} ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}`
   return (
     <button
       type="button"

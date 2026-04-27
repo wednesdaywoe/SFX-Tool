@@ -107,7 +107,7 @@ export function LibraryItem({
             className="term"
             style={{
               fontSize: '14px',
-              color: '#a8d8b0',
+              color: '#b8e0c0',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               whiteSpace: 'nowrap',
@@ -121,7 +121,7 @@ export function LibraryItem({
           className="pixel"
           style={{
             fontSize: '7px',
-            color: '#4a7a5a',
+            color: '#6fa180',
             letterSpacing: '0.18em',
             textTransform: 'uppercase',
           }}
@@ -223,7 +223,7 @@ function IconBtn({ ariaLabel, title, danger, onClick, children }: IconBtnProps) 
         justifyContent: 'center',
         background: '#050908',
         border: '1px solid #122418',
-        color: danger ? '#ff6b8a' : '#6fa180',
+        color: danger ? '#ff6b8a' : '#8fc0a0',
         fontFamily: "'VT323', monospace",
         fontSize: '12px',
         cursor: 'pointer',

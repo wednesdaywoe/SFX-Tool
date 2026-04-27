@@ -1,0 +1,51 @@
+{
+  "version": "3.0",
+  "kind": "sound",
+  "mode": "tonal",
+  "preset": "laser",
+  "params": {
+    "base_pitch_semitones": 8,
+    "osc_a_wave": "square",
+    "osc_a_level": 0.89,
+    "osc_b_wave": "saw",
+    "osc_b_level": 0,
+    "osc_b_detune_cents": 5,
+    "sub_amount": 0.33,
+    "noise_type": "white",
+    "noise_amount": 0.37,
+    "filter_type": "lowpass",
+    "filter_freq_hz": 1924,
+    "filter_q": 2.25,
+    "filter_env_amount": 0.91,
+    "filter_env_attack_ms": 309,
+    "filter_env_decay_ms": 6,
+    "amp_attack_ms": 18,
+    "amp_decay_ms": 6,
+    "amp_sustain": 0.81,
+    "amp_release_ms": 136,
+    "pitch_env_amount_oct": -1.84,
+    "pitch_env_attack_ms": 233,
+    "pitch_env_decay_ms": 9,
+    "lfo_rate_hz": 5,
+    "lfo_depth": 0,
+    "lfo_shape": "sine",
+    "lfo_target": "off",
+    "gain": 0.81
+  },
+  "pattern": {
+    "enabled": true,
+    "steps": 1,
+    "interval_ms": 110,
+    "pitch_offsets": [
+      0
+    ],
+    "volume_decay": 1,
+    "direction": "forward"
+  },
+  "metadata": {
+    "tool": "sfx-tool",
+    "tool_version": "3.0.0",
+    "created": "2026-04-27T15:57:45.698Z",
+    "name": "laser_02"
+  }
+}
