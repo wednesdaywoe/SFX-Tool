@@ -523,21 +523,31 @@ function App() {
     }
   }, [])
 
-  // Auto-play on params/pattern/mode change (source-mode only — stack changes
-  // don't auto-trigger because users build them up incrementally and it'd be
-  // disruptive).
+  // Auto-play on parameter / pattern / mode change.
+  //
+  // Behavior is decoupled from triggerSource: adjusting a slider plays the
+  // source-mode sound the panel authors, even when triggerSource === 'stack'
+  // (which became the default in v3.5). The TRIGGER button still respects
+  // triggerSource for explicit playback; auto-play is the "I'm tweaking a
+  // value, let me hear the change" affordance for the parameter panel only.
+  //
+  // Skipped for atmospheric — params already apply live during continuous
+  // playback, and one-shot rendering of a continuous sound is meaningless.
   useEffect(() => {
     if (isFirstRenderRef.current) {
       isFirstRenderRef.current = false
       return
     }
     if (!autoPlayOnChange) return
-    if (triggerSource === 'stack') return
-    // Atmospheric mode: parameter changes already apply live during playback.
-    // When stopped, auto-play would have nothing meaningful to do. Skip.
     if (mode === 'atmospheric') return
     const timer = window.setTimeout(() => {
-      void handleTrigger()
+      void (async () => {
+        const { buffer: rendered, label } = await renderSourceSound()
+        setBuffer(rendered)
+        setBufferDurationMs(rendered.duration * 1000)
+        setBufferLabel(label)
+        playBuffer(rendered)
+      })()
     }, AUTO_PLAY_DEBOUNCE_MS)
     return () => window.clearTimeout(timer)
   }, [
@@ -546,9 +556,8 @@ function App() {
     percussivePattern,
     tonalPattern,
     mode,
-    handleTrigger,
+    renderSourceSound,
     autoPlayOnChange,
-    triggerSource,
   ])
 
   // ----- Library: save / recall / audition / rename / delete -----
