@@ -23,7 +23,10 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
+      # Using `npm install` rather than `npm ci` because tailwindcss/oxide
+      # ships a wasm32-wasi optional package whose transitive deps don't get
+      # fully resolved into a cross-platform lockfile from a Windows machine.
+      - run: npm install --no-audit --no-fund
       - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
