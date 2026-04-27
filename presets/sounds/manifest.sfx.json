@@ -1,0 +1,41 @@
+{
+  "version": "2.0",
+  "exported": "2026-04-27T12:28:55.245Z",
+  "tool": "sfx-tool",
+  "tool_version": "3.0.0",
+  "folders": [],
+  "entries": [
+    {
+      "id": "8821f7f2-79df-41b2-9bca-e8f8905be2de",
+      "name": "ocean_01",
+      "kind": "sound",
+      "filename": "sounds/ocean_01.sfx.json",
+      "created": "2026-04-27T12:10:41.175Z",
+      "modified": "2026-04-27T12:10:41.175Z"
+    },
+    {
+      "id": "bea17503-2839-442a-b1c9-dc12d60061f7",
+      "name": "rain_01",
+      "kind": "sound",
+      "filename": "sounds/rain_01.sfx.json",
+      "created": "2026-04-27T12:11:01.147Z",
+      "modified": "2026-04-27T12:11:01.147Z"
+    },
+    {
+      "id": "a9a81589-03c9-4439-93bb-2ef03d3f72e3",
+      "name": "fire_01",
+      "kind": "sound",
+      "filename": "sounds/fire_01.sfx.json",
+      "created": "2026-04-27T12:16:38.412Z",
+      "modified": "2026-04-27T12:16:38.412Z"
+    },
+    {
+      "id": "cd72de5d-39ae-44ae-aa1f-4637e64464ce",
+      "name": "wind_01",
+      "kind": "sound",
+      "filename": "sounds/wind_01.sfx.json",
+      "created": "2026-04-27T12:19:56.178Z",
+      "modified": "2026-04-27T12:19:56.178Z"
+    }
+  ]
+}
