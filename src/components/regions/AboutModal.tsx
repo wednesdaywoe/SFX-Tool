@@ -24,7 +24,7 @@ export function AboutModal({ isOpen, onClose }: AboutModalProps) {
           A foraging-style synth for authoring game sound effects. Three synthesis modes
           (percussive + tonal + atmospheric), a render-time pattern feature for repeats and
           arpeggios, and multichannel stacks for composing layered sounds.
-          Library is folder-organized and persists across sessions. Save your sounds as WAV and JSON.
+          Library is folder-organized and persists across sessions. Save your sounds as both WAV and JSON.
         </p>
 
         <section>
