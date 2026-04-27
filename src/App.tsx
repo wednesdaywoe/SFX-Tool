@@ -975,12 +975,6 @@ function App() {
   ])
 
   const handleExportJson = useCallback(() => {
-    if (mode === 'atmospheric' && triggerSource === 'source') {
-      window.alert(
-        'Exporting atmospheric specs is coming in v3.6 (alongside variable-duration export).',
-      )
-      return
-    }
     let spec: Spec
     let name: string
     const existingNames = library.entries.map((e) => e.name)
@@ -1020,12 +1014,21 @@ function App() {
         pattern: percussivePattern.enabled ? percussivePattern : undefined,
         name,
       })
-    } else {
+    } else if (mode === 'tonal') {
       name = nextNameForPreset(tonalPresetKey, existingNames)
       spec = serializeTonalSpec({
         preset: tonalPresetKey as TonalPreset,
         params: tonalParams,
         pattern: tonalPattern.enabled ? tonalPattern : undefined,
+        name,
+      })
+    } else {
+      // atmospheric
+      name = nextNameForPreset(atmosphericPresetKey, existingNames)
+      spec = serializeAtmosphericSpec({
+        preset: atmosphericPresetKey as AtmosphericPresetSpec,
+        params: atmosphericParams,
+        duration_ms: DEFAULT_ATMO_DURATION_S * 1000,
         name,
       })
     }
@@ -1044,6 +1047,8 @@ function App() {
     tonalParams,
     tonalPresetKey,
     tonalPattern,
+    atmosphericParams,
+    atmosphericPresetKey,
     library.entries,
     jsonExportMode,
   ])
