@@ -1,0 +1,763 @@
+@import 'tailwindcss';
+
+/*
+ * SFX TOOL — CATHODE THEME (v3)
+ * Phosphor green CRT re-skin. Authoritative reference: sfx-tool-v2-cathode_2.jsx
+ */
+
+@theme {
+  /* Typography ladder
+     pixel  = Silkscreen   (true bitmap; tiny labels ≤10px)
+     term   = VT323        (CRT terminal mono; body, numerics)
+     sans   = IBM Plex Sans (precision readouts, modal body) */
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-pixel: 'Silkscreen', monospace;
+  --font-term: 'VT323', monospace;
+  --font-display: 'Silkscreen', monospace;
+  --font-mono: 'VT323', monospace;
+
+  /* Backgrounds */
+  --color-bg-0: #06080a;
+  --color-bg-1: #050908;
+  --color-bg-grid: #0a1410;
+  --color-bg-active: #0c1f15;
+  --color-bg-track: #07100c;
+  --color-bg-track-selected: #0a1814;
+
+  /* Phosphor */
+  --color-phosphor: #39ff7a;
+  --color-phosphor-dim: #0c1f15;
+  --color-phosphor-mid: #1c3a26;
+
+  /* Text */
+  --color-text-bright: #a8d8b0;
+  --color-text: #c8e8d0;
+  --color-text-dim: #6fa180;
+  --color-text-faint: #4a7a5a;
+  --color-text-deep: #2d4a36;
+
+  /* Borders */
+  --color-border: #122418;
+  --color-border-active: #1c3a26;
+
+  /* Faction palette (mode tags + accents) */
+  --color-cyan: #4dd0ff;
+  --color-cyan-bg: #0a2030;
+  --color-cyan-border: #1c4a66;
+  --color-amber: #ffb84d;
+  --color-amber-bg: #2a1f0a;
+  --color-amber-border: #5a4520;
+  --color-magenta: #ff4dcc;
+  --color-magenta-bg: #2a0a20;
+  --color-magenta-border: #5a1f4a;
+  --color-magenta-hi: #ff8fdc;
+  --color-lavender: #a78fff;
+  --color-lavender-bg: #1a0f2e;
+  --color-white-tag: #c8e8d0;
+
+  /* Accent (compatibility for older code; maps to phosphor) */
+  --color-accent: #39ff7a;
+  --color-accent-hi: #8fffaf;
+  --color-accent-glow: rgba(57, 255, 122, 0.35);
+
+  /* Stone palette (compat: dark→light maps to text scale on greens) */
+  --color-stone-950: #06080a;
+  --color-stone-900: #050908;
+  --color-stone-800: #0a1410;
+  --color-stone-700: #122418;
+  --color-stone-600: #1c3a26;
+  --color-stone-500: #4a7a5a;
+  --color-stone-400: #6fa180;
+  --color-stone-300: #a8d8b0;
+  --color-stone-200: #c8e8d0;
+  --color-stone-100: #d8f0e0;
+
+  --color-text-primary: #c8e8d0;
+  --color-text-secondary: #6fa180;
+  --color-text-tertiary: #4a7a5a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #06080a;
+  color: #c8e8d0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* ─── TYPOGRAPHY UTILITIES ───────────────────────── */
+.pixel {
+  font-family: var(--font-pixel);
+  letter-spacing: 0.05em;
+}
+.term {
+  font-family: var(--font-term);
+  letter-spacing: 0.02em;
+}
+.display {
+  font-family: var(--font-pixel);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+/* Tabular figures for readouts. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── CRT ATMOSPHERE ─────────────────────────────────
+ * Two layers: scanlines + vignette. Both fixed, pointer-events none.
+ * Toggleable via .reduce-effects on a parent (accessibility setting). */
+.crt-overlay::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(57, 255, 122, 0.025) 0px,
+    rgba(57, 255, 122, 0.025) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  z-index: 9998;
+  mix-blend-mode: overlay;
+}
+.crt-overlay::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 50%,
+    rgba(0, 0, 0, 0.35) 100%
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+.reduce-effects.crt-overlay::before,
+.reduce-effects.crt-overlay::after,
+.reduce-effects .crt-overlay::before,
+.reduce-effects .crt-overlay::after {
+  display: none;
+}
+
+/* ─── PANEL ─────────────────────────────────────────── */
+.panel {
+  background: #0a1410;
+  border: 1px solid #122418;
+  box-shadow:
+    inset 1px 1px 0 rgba(57, 255, 122, 0.06),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.4);
+}
+.panel-header {
+  background: #050908;
+  border-bottom: 1px solid #122418;
+  padding: 6px 12px;
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: #6fa180;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ─── SLIDER ─────────────────────────────────────────── */
+.slider-track {
+  position: relative;
+  height: 4px;
+  background: #0a1410;
+  cursor: pointer;
+  flex: 1;
+  border: 1px solid #122418;
+}
+.slider-fill {
+  position: absolute;
+  height: 100%;
+  background: #39ff7a;
+  box-shadow:
+    0 0 6px rgba(57, 255, 122, 0.6),
+    0 0 12px rgba(57, 255, 122, 0.25);
+  pointer-events: none;
+}
+.slider-thumb {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  background: #39ff7a;
+  transform: translate(-50%, -50%);
+  box-shadow:
+    0 0 0 1px #06080a,
+    0 0 0 2px #39ff7a,
+    0 0 8px rgba(57, 255, 122, 0.8);
+  pointer-events: none;
+}
+.slider-input {
+  position: absolute;
+  inset: -8px 0;
+  width: 100%;
+  height: 20px;
+  opacity: 0;
+  cursor: pointer;
+  margin: 0;
+}
+
+/* ─── SEGMENTED BUTTONS ─────────────────────────────── */
+.seg-button {
+  flex: 1;
+  padding: 5px 10px;
+  font-family: var(--font-term);
+  font-size: 14px;
+  background: #050908;
+  color: #4a7a5a;
+  border: 1px solid #122418;
+  cursor: pointer;
+  transition: all 0.08s;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.seg-button:hover:not(:disabled) {
+  color: #8fd0a0;
+  border-color: #1c3a26;
+}
+.seg-button.active {
+  background: #0c1f15;
+  color: #39ff7a;
+  border-color: #1c3a26;
+  text-shadow: 0 0 6px rgba(57, 255, 122, 0.6);
+}
+.seg-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.seg-group {
+  display: flex;
+  gap: 0;
+}
+.seg-group .seg-button:not(:first-child) {
+  border-left: none;
+}
+
+/* ─── PRESET LIST ───────────────────────────────────── */
+.preset-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  font-family: var(--font-term);
+  font-size: 16px;
+  color: #6fa180;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all 0.08s;
+  letter-spacing: 0.02em;
+  width: 100%;
+  background: transparent;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  text-align: left;
+}
+.preset-item:hover {
+  background: #0a1410;
+  color: #a8d8b0;
+}
+.preset-item.active {
+  background: #0c1f15;
+  color: #39ff7a;
+  border-left-color: #39ff7a;
+  text-shadow: 0 0 6px rgba(57, 255, 122, 0.5);
+}
+.preset-dot {
+  width: 6px;
+  height: 6px;
+  background: #1c3a26;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+.preset-item.active .preset-dot {
+  background: #39ff7a;
+  box-shadow: 0 0 8px rgba(57, 255, 122, 0.9);
+}
+
+/* ─── KEY HINTS ─────────────────────────────────────── */
+.key-hint {
+  display: inline-block;
+  padding: 1px 5px;
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  background: #050908;
+  border: 1px solid #1c3a26;
+  color: #6fa180;
+  letter-spacing: 0.05em;
+}
+
+/* ─── MODE PILL (top-bar selector) ──────────────────── */
+.mode-pill {
+  padding: 6px 16px;
+  font-family: var(--font-term);
+  font-size: 14px;
+  font-weight: normal;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid #122418;
+  background: #050908;
+  color: #6fa180;
+  cursor: pointer;
+  transition: all 0.08s;
+}
+.mode-pill:hover:not(.disabled):not(.active) {
+  color: #a8d8b0;
+  border-color: #1c3a26;
+}
+.mode-pill.active {
+  background: #0c1f15;
+  color: #39ff7a;
+  border-color: #39ff7a;
+  text-shadow: 0 0 6px rgba(57, 255, 122, 0.7);
+  cursor: default;
+}
+.mode-pill.disabled {
+  color: #2d4a36;
+  cursor: not-allowed;
+}
+.mode-pill .soon {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  margin-left: 6px;
+  opacity: 0.6;
+}
+
+/* ─── LIBRARY ──────────────────────────────────────── */
+.library-folder-header {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px;
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  color: #6fa180;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: #050908;
+  border-bottom: 1px solid #0a1410;
+  transition: all 0.08s;
+  width: 100%;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+.library-folder-header:hover {
+  color: #8fd0a0;
+  background: #080d0b;
+}
+
+.library-item {
+  padding: 5px 10px 5px 18px;
+  border-bottom: 1px solid #0a1410;
+  cursor: grab;
+  transition: background 0.08s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  background: transparent;
+}
+.library-item:hover {
+  background: #0a1410;
+}
+.library-item:hover .add-stack-btn {
+  opacity: 1;
+}
+.library-item.selected {
+  background: #0c1f15;
+}
+.library-item.dragging {
+  opacity: 0.5;
+}
+
+.add-stack-btn {
+  opacity: 0;
+  transition: opacity 0.08s;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 18px;
+  background: #0c1f15;
+  border: 1px solid #1c3a26;
+  color: #39ff7a;
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.add-stack-btn:hover {
+  background: #1c3a26;
+}
+
+/* ─── STACK ROSTER ITEM ─────────────────────────────── */
+.stack-list-item {
+  padding: 6px 10px;
+  border-bottom: 1px solid #0a1410;
+  background: #050908;
+  transition: opacity 0.15s, background 0.15s;
+  cursor: pointer;
+}
+.stack-list-item:hover {
+  background: #0a1410;
+}
+.stack-list-item.selected {
+  background: #0c1f15;
+  border-left: 2px solid #39ff7a;
+  padding-left: 8px;
+}
+.stack-list-item.muted {
+  opacity: 0.4;
+}
+.stack-list-item.soloed-out {
+  opacity: 0.3;
+}
+
+.ms-button {
+  width: 20px;
+  height: 18px;
+  border: 1px solid #122418;
+  background: #050908;
+  color: #4a7a5a;
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  cursor: pointer;
+  transition: all 0.08s;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.ms-button:hover {
+  color: #a8d8b0;
+}
+.ms-button.active-mute {
+  background: #2a1f0a;
+  color: #ffb84d;
+  border-color: #5a4520;
+}
+.ms-button.active-solo {
+  background: #ff4d9f;
+  color: #06080a;
+  border-color: #ff8fcc;
+  box-shadow: 0 0 6px rgba(255, 77, 159, 0.5);
+}
+
+/* ─── MODE TAGS — faction colors ─────────────────────
+ * P=cyan, T=amber, S=magenta, A=white/silver. */
+.mode-tag {
+  width: 16px;
+  height: 14px;
+  font-family: var(--font-pixel);
+  font-size: 8px;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid;
+}
+.mode-tag.P {
+  background: #0a2030;
+  color: #4dd0ff;
+  border-color: #1c4a66;
+  text-shadow: 0 0 4px rgba(77, 208, 255, 0.5);
+}
+.mode-tag.T {
+  background: #2a1f0a;
+  color: #ffb84d;
+  border-color: #5a4520;
+  text-shadow: 0 0 4px rgba(255, 184, 77, 0.5);
+}
+.mode-tag.S {
+  background: #2a0a20;
+  color: #ff4dcc;
+  border-color: #5a1f4a;
+  text-shadow: 0 0 4px rgba(255, 77, 204, 0.5);
+}
+.mode-tag.A {
+  background: #1a2520;
+  color: #c8e8d0;
+  border-color: #4a7a5a;
+  text-shadow: 0 0 4px rgba(200, 232, 208, 0.5);
+}
+
+/* ─── WAVEFORM CONTAINER ────────────────────────────── */
+.waveform-container {
+  background: #050908;
+  border: 1px solid #122418;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 24px rgba(57, 255, 122, 0.04);
+}
+
+/* ─── GRID BACKGROUND (center column) ──────────────── */
+.grid-bg {
+  background-color: #0a1410;
+  background-image:
+    linear-gradient(rgba(57, 255, 122, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(57, 255, 122, 0.04) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Compat for v1 dot-grid usages — superseded by .grid-bg. */
+.dot-grid {
+  background-color: #0a1410;
+  background-image:
+    linear-gradient(rgba(57, 255, 122, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(57, 255, 122, 0.04) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* ─── EXPORT BUTTONS ──────────────────────────────── */
+.export-btn {
+  padding: 8px 12px;
+  background: #0a1410;
+  border: 1px solid #1c3a26;
+  color: #8fd0a0;
+  cursor: pointer;
+  transition: all 0.08s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 60px;
+  font-family: var(--font-term);
+  box-shadow:
+    inset 1px 1px 0 rgba(57, 255, 122, 0.08),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.4);
+}
+.export-btn:hover:not(:disabled) {
+  background: #0c1f15;
+  color: #39ff7a;
+}
+.export-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.export-btn .label {
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+.export-btn .hint {
+  font-family: var(--font-pixel);
+  font-size: 7px;
+  color: #4a7a5a;
+}
+
+/* ─── PATTERN STEP ────────────────────────────────── */
+.pattern-step {
+  width: 32px;
+  height: 32px;
+  background: #050908;
+  border: 1px solid #1c3a26;
+  color: #39ff7a;
+  font-family: var(--font-term);
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.08s;
+  box-shadow:
+    inset 1px 1px 0 rgba(57, 255, 122, 0.08),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 4px rgba(57, 255, 122, 0.5);
+}
+.pattern-step:hover {
+  background: #0c1f15;
+  border-color: #39ff7a;
+}
+
+/* ─── TIMELINE ────────────────────────────────────── */
+.timeline-track {
+  position: relative;
+  height: 64px;
+  border-bottom: 1px solid #0a1410;
+  display: flex;
+  align-items: stretch;
+}
+.track-label {
+  width: 130px;
+  flex-shrink: 0;
+  padding: 0 8px;
+  background: #050908;
+  border-right: 1px solid #0a1410;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-term);
+}
+.track-content {
+  flex: 1;
+  position: relative;
+  background: #07100c;
+  overflow: hidden;
+}
+.track-content.selected {
+  background: #0a1814;
+}
+
+.layer-block {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  background: rgba(57, 255, 122, 0.12);
+  border: 1px solid #39ff7a;
+  cursor: grab;
+  transition: background 0.08s, border-color 0.08s;
+  overflow: hidden;
+  box-shadow: inset 0 0 12px rgba(57, 255, 122, 0.1);
+}
+.layer-block:hover {
+  background: rgba(57, 255, 122, 0.18);
+}
+.layer-block.selected {
+  background: rgba(57, 255, 122, 0.22);
+  border-color: #39ff7a;
+  box-shadow:
+    0 0 0 1px rgba(57, 255, 122, 0.4),
+    0 0 16px rgba(57, 255, 122, 0.4),
+    inset 0 0 16px rgba(57, 255, 122, 0.15);
+}
+.layer-block.muted {
+  background: rgba(120, 113, 108, 0.08);
+  border-color: #4a7a5a;
+  border-style: dashed;
+}
+.layer-block.soloed-out {
+  opacity: 0.3;
+}
+.layer-block:active {
+  cursor: grabbing;
+}
+
+.gain-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  cursor: ns-resize;
+  background: rgba(57, 255, 122, 0.3);
+  border-bottom: 1px solid #39ff7a;
+}
+.gain-handle:hover {
+  background: rgba(57, 255, 122, 0.6);
+}
+
+.timeline-ruler {
+  height: 22px;
+  background: #050908;
+  border-bottom: 1px solid #122418;
+  position: relative;
+}
+
+/* ─── BLINK CURSOR — wordmark ─────────────────────── */
+@keyframes blink-cursor {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+.blink {
+  animation: blink-cursor 1s steps(2) infinite;
+}
+
+/* ─── PHOSPHOR PULSE — atmospheric play indicator ─── */
+@keyframes phosphor-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 6px rgba(57, 255, 122, 0.6),
+      0 0 16px rgba(57, 255, 122, 0.4),
+      inset 0 0 24px rgba(57, 255, 122, 0.12);
+  }
+  50% {
+    box-shadow:
+      0 0 16px rgba(57, 255, 122, 1),
+      0 0 32px rgba(57, 255, 122, 0.6),
+      inset 0 0 24px rgba(57, 255, 122, 0.2);
+  }
+}
+.phosphor-pulse {
+  animation: phosphor-pulse 1.5s ease-in-out infinite;
+}
+
+/* ─── SELECT (native, restyled) ──────────────────── */
+select.cathode-select {
+  background: #050908;
+  color: #39ff7a;
+  border: 1px solid #122418;
+  padding: 4px 10px;
+  font-family: var(--font-term);
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow:
+    inset 1px 1px 0 rgba(57, 255, 122, 0.06),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* ─── INPUT (numeric edit, click-to-type) ────────── */
+input.cathode-input {
+  background: #050908;
+  color: #39ff7a;
+  border: 1px solid #1c3a26;
+  padding: 2px 6px;
+  font-family: var(--font-term);
+  font-size: 14px;
+  outline: none;
+  text-shadow: 0 0 4px rgba(57, 255, 122, 0.4);
+}
+input.cathode-input:focus {
+  border-color: #39ff7a;
+  box-shadow: 0 0 6px rgba(57, 255, 122, 0.4);
+}
+
+/* Scrollbar (subtle, in-theme) */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: #050908;
+}
+*::-webkit-scrollbar-thumb {
+  background: #1c3a26;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #2d5a3e;
+}
