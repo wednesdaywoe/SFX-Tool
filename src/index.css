@@ -346,6 +346,13 @@ button {
   color: #ffb84d;
   border-color: #5a4520;
 }
+.mode-pill.fm {
+  color: #c890b8;
+}
+.mode-pill.fm:hover:not(.disabled):not(.active) {
+  color: #ff4dcc;
+  border-color: #5a204a;
+}
 .mode-pill.atmospheric {
   color: #a89cc8;
 }
@@ -367,6 +374,13 @@ button {
   color: #ffb84d;
   border-color: #ffb84d;
   text-shadow: 0 0 6px rgba(255, 184, 77, 0.7);
+  cursor: default;
+}
+.mode-pill.active.fm {
+  background: #2a0a20;
+  color: #ff4dcc;
+  border-color: #ff4dcc;
+  text-shadow: 0 0 6px rgba(255, 77, 204, 0.7);
   cursor: default;
 }
 .mode-pill.active.atmospheric {
@@ -540,6 +554,12 @@ button {
   color: #ff4dcc;
   border-color: #5a1f4a;
   text-shadow: 0 0 4px rgba(255, 77, 204, 0.5);
+}
+.mode-tag.F {
+  background: #0a2a22;
+  color: #4de8c0;
+  border-color: #1c5a48;
+  text-shadow: 0 0 4px rgba(77, 232, 192, 0.5);
 }
 .mode-tag.A {
   background: #1a2520;

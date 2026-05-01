@@ -1,6 +1,6 @@
 import { TOOL_VERSION } from '../../spec'
 
-type Mode = 'percussive' | 'tonal' | 'atmospheric'
+type Mode = 'percussive' | 'tonal' | 'fm' | 'atmospheric'
 
 interface TopBarProps {
   mode: Mode
@@ -74,6 +74,13 @@ export function TopBar({
           title="Pitched/sustained sounds — laser, coin, beep, jump, whoosh, magic, electric"
         />
         <ModePill
+          label="FM"
+          variant="fm"
+          active={mode === 'fm'}
+          onClick={() => onModeChange('fm')}
+          title="4-operator frequency modulation — bell, e.piano, bass, brass, glass, bass drop"
+        />
+        <ModePill
           label="Atmospheric"
           variant="atmospheric"
           active={mode === 'atmospheric'}
@@ -123,7 +130,7 @@ export function TopBar({
 
 interface ModePillProps {
   label: string
-  variant?: 'percussive' | 'tonal' | 'atmospheric'
+  variant?: 'percussive' | 'tonal' | 'fm' | 'atmospheric'
   active: boolean
   disabled?: boolean
   soon?: boolean

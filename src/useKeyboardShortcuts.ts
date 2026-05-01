@@ -11,7 +11,7 @@ export interface KeyboardShortcutHandlers {
   onExportJson: () => void
 
   // v2 global additions
-  onSwitchMode: (mode: 'percussive' | 'tonal' | 'atmospheric') => void
+  onSwitchMode: (mode: 'percussive' | 'tonal' | 'fm' | 'atmospheric') => void
   onTogglePattern: () => void
   onToggleTriggerSource: () => void
 
@@ -75,6 +75,11 @@ export function useKeyboardShortcuts(
         return
       }
       if (cmd && !e.shiftKey && key === '3') {
+        e.preventDefault()
+        handlers.onSwitchMode('fm')
+        return
+      }
+      if (cmd && !e.shiftKey && key === '4') {
         e.preventDefault()
         handlers.onSwitchMode('atmospheric')
         return

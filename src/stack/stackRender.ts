@@ -1,6 +1,7 @@
 import { applyPattern } from '../dsp/pattern/applyPattern'
 import { renderAtmosphericOffline } from '../dsp/atmospheric/offline'
 import { removeDCOffset } from '../dsp/envelope'
+import { renderFm } from '../dsp/fm/render'
 import { renderPercussive } from '../dsp/render'
 import { renderTonal } from '../dsp/tonal/render'
 import { SAMPLE_RATE } from '../dsp/types'
@@ -32,6 +33,7 @@ async function renderSound(
 ): Promise<AudioBuffer> {
   if (spec.mode === 'percussive') return renderPercussive(spec.params)
   if (spec.mode === 'tonal') return renderTonal(spec.params)
+  if (spec.mode === 'fm') return renderFm(spec.params)
   // Atmospheric: bounded render at the layer's duration_ms (or fallback default).
   return renderAtmosphericOffline(spec.params, durationMs / 1000)
 }
@@ -180,7 +182,7 @@ function estimateSpecDurationMs(spec: SoundSpec): number {
   if (spec.mode === 'percussive') {
     return spec.params.decay_ms + 50
   }
-  if (spec.mode === 'tonal') {
+  if (spec.mode === 'tonal' || spec.mode === 'fm') {
     const p = spec.params
     return Math.min(
       4000,

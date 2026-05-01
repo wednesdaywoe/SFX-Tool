@@ -7,7 +7,7 @@ const DEBOUNCE_MS = 400
 export type JsonExportMode = 'reference' | 'flattened'
 
 export interface PersistedUiState {
-  currentMode: 'percussive' | 'tonal' | 'atmospheric'
+  currentMode: 'percussive' | 'tonal' | 'fm' | 'atmospheric'
   autoPlayOnChange: boolean
   mutateDistance: 'S' | 'M' | 'L'
   jsonExportMode: JsonExportMode

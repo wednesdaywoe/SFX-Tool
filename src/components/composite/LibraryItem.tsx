@@ -178,7 +178,7 @@ export function LibraryItem({
 }
 
 function ModeTag({ spec }: { spec: Spec }) {
-  let letter: 'P' | 'T' | 'S' | 'A'
+  let letter: 'P' | 'T' | 'F' | 'S' | 'A'
   let title: string
   if (spec.kind === 'stack') {
     letter = 'S'
@@ -189,6 +189,9 @@ function ModeTag({ spec }: { spec: Spec }) {
   } else if (spec.mode === 'tonal') {
     letter = 'T'
     title = 'Tonal'
+  } else if (spec.mode === 'fm') {
+    letter = 'F'
+    title = 'FM'
   } else {
     letter = 'A'
     title = 'Atmospheric'

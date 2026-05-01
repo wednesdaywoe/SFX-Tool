@@ -1,0 +1,20 @@
+All four phases complete. Build green, vite build green, dev server running.
+
+What landed
+DSP — src/dsp/fm/: types, 8 algorithms, per-op ADSR, single-pass per-sample source loop with op1 feedback, full render pipeline (filter → amp ADSR → amp LFO → gain → DC removal).
+
+UI — Fm.tsx + FmAlgorithmPicker.tsx + FmOperatorEditor.tsx: 4×2 algorithm grid with text labels (1▸2▸3▸4 etc.), operator tabs with carrier/modulator dot-color reflecting current algorithm, ratio↔fixed-Hz toggle per op, full ADSR per op.
+
+Presets + Foraging — presets-fm.ts ships 6 starters (Bell, E.Piano, Bass, Brass, Glass, Bass Drop). foraging-fm.ts handles operator-aware randomize/mutate via shared per-op ranges.
+
+Wiring — Mode added everywhere: App.tsx state/handlers/render/save/recall/export, TopBar FM pill, ⌘3 keyboard shortcut (Atmospheric moved to ⌘4), spec.ts FmSpec + serializer + parser, stackRender.ts FM layer support, LibraryItem/TimelineTrack/StackLayerListItem "F" mode tag, persistence schema. CSS adds .mode-pill.fm (magenta) + .mode-tag.F (teal).
+
+Heads up — needs your hands-on check
+I cannot actually click around or hear the output from this environment. The build is green and the JSX renders to valid HTML, but I'd specifically check:
+
+Bell preset audibility — does it sound like an FM bell, or are the operator levels off?
+Algorithm switching — when you change algorithms, do the operator tab dots correctly recolor (cyan=carrier, pink=modulator)?
+Bass Drop — pitch envelope + fixed-Hz op4 sub is the most exotic preset; verify the downward sweep is audible.
+Save → recall round trip — save a tweaked FM preset to the library, refresh, recall it; params should match.
+⌘3 / ⌘4 shortcut order — Atmospheric moved to ⌘4. If you have muscle memory on ⌘3 = Atmospheric, that'll feel wrong; let me know if you'd rather keep Atmospheric on ⌘3 and put FM on ⌘4 instead.
+If anything's off, point me at what you hear/see and I'll adjust.

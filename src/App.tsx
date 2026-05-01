@@ -26,6 +26,7 @@ import { StackRoster } from './components/regions/StackRoster'
 import { TopBar } from './components/regions/TopBar'
 import { AboutModal } from './components/regions/AboutModal'
 import { SettingsModal } from './components/regions/SettingsModal'
+import { renderFm } from './dsp/fm/render'
 import { renderPercussive } from './dsp/render'
 import { renderTonal } from './dsp/tonal/render'
 import { applyPattern } from './dsp/pattern/applyPattern'
@@ -41,6 +42,7 @@ import {
   mutateTonalPreset,
   randomizeTonalPreset,
 } from './foraging-tonal'
+import { mutateFmPreset, randomizeFmPreset } from './foraging-fm'
 import {
   addEntry,
   createFolder,
@@ -60,12 +62,17 @@ import { PRESETS, PRESET_ORDER } from './presets'
 import type { PresetKey } from './presets'
 import { TONAL_PRESETS, TONAL_PRESET_ORDER } from './presets-tonal'
 import type { TonalPresetKey } from './presets-tonal'
+import { FM_PRESETS, FM_PRESET_ORDER } from './presets-fm'
+import type { FmPresetKey } from './presets-fm'
+import type { FmParams } from './dsp/fm/types'
 import {
   serializeAtmosphericSpec,
+  serializeFmSpec,
   serializePercussiveSpec,
   serializeStackSpec,
   serializeTonalSpec,
   type AtmosphericPreset as AtmosphericPresetSpec,
+  type FmPreset as FmPresetSpec,
   type PercussivePreset,
   type Spec,
   type SoundSpec,
@@ -95,7 +102,7 @@ import {
 import { useKeyboardShortcuts } from './useKeyboardShortcuts'
 import { audioBufferToWav, downloadBlob } from './wav'
 
-type Mode = 'percussive' | 'tonal' | 'atmospheric'
+type Mode = 'percussive' | 'tonal' | 'fm' | 'atmospheric'
 
 const AUTO_PLAY_DEBOUNCE_MS = 120
 // Default duration when saving an atmospheric sound. Phase 6 will surface
@@ -120,6 +127,10 @@ function App() {
   const [tonalParams, setTonalParams] = useState<TonalParams>(
     TONAL_PRESETS.beep.defaults,
   )
+  const [fmPresetKey, setFmPresetKey] = useState<FmPresetKey>('bell')
+  const [fmParams, setFmParams] = useState<FmParams>(
+    FM_PRESETS.bell.defaults,
+  )
   const [percussivePattern, setPercussivePattern] =
     useState<PatternConfig>(DEFAULT_PATTERN)
   const [tonalPattern, setTonalPattern] = useState<PatternConfig>(
@@ -140,6 +151,7 @@ function App() {
   // tuned for an atmospheric pad would clobber a percussive click).
   const [percussiveFX, setPercussiveFX] = useState<FXConfig>(DEFAULT_FX_CONFIG)
   const [tonalFX, setTonalFX] = useState<FXConfig>(DEFAULT_FX_CONFIG)
+  const [fmFX, setFmFX] = useState<FXConfig>(DEFAULT_FX_CONFIG)
   const [atmosphericFX, setAtmosphericFX] = useState<FXConfig>(DEFAULT_FX_CONFIG)
 
   const [buffer, setBuffer] = useState<AudioBuffer | null>(null)
@@ -262,6 +274,9 @@ function App() {
           const dur =
             (entry.spec.duration_ms ?? DEFAULT_ATMO_DURATION_S * 1000) / 1000
           final = await renderAtmosphericOffline(entry.spec.params, dur)
+        } else if (entry.spec.mode === 'fm') {
+          // FM has no pattern field in v1 — render straight.
+          final = await renderFm(entry.spec.params)
         } else {
           const synthesized =
             entry.spec.mode === 'percussive'
@@ -339,6 +354,13 @@ function App() {
             : DEFAULT_PATTERN,
         )
         setTonalFX(def.fx ?? DEFAULT_FX_CONFIG)
+      } else if (mode === 'fm') {
+        const k = key as FmPresetKey
+        const def = FM_PRESETS[k]
+        if (!def) return
+        setFmPresetKey(k)
+        setFmParams(def.defaults)
+        setFmFX(def.fx ?? DEFAULT_FX_CONFIG)
       } else {
         const k = key as AtmosphericPresetKey
         const def = ATMOSPHERIC_PRESETS[k]
@@ -360,7 +382,9 @@ function App() {
           ? PRESET_ORDER
           : mode === 'tonal'
             ? TONAL_PRESET_ORDER
-            : ATMOSPHERIC_PRESET_ORDER
+            : mode === 'fm'
+              ? FM_PRESET_ORDER
+              : ATMOSPHERIC_PRESET_ORDER
       const key = order[idx]
       if (!key) return
       handleSelectPreset(key as string)
@@ -386,6 +410,14 @@ function App() {
     [],
   )
 
+  const handleFmParamChange = useCallback(
+    <K extends keyof FmParams>(key: K, value: FmParams[K]) => {
+      setFmParams((prev) => ({ ...prev, [key]: value }))
+      setSelectedEntryId(null)
+    },
+    [],
+  )
+
   const handleAtmosphericParamChange = useCallback(
     <K extends keyof AtmosphericParams>(
       key: K,
@@ -404,13 +436,15 @@ function App() {
       setPercussiveParams(randomizeWithinPreset(PRESETS[percussivePresetKey]))
     } else if (mode === 'tonal') {
       setTonalParams(randomizeTonalPreset(TONAL_PRESETS[tonalPresetKey]))
+    } else if (mode === 'fm') {
+      setFmParams(randomizeFmPreset(FM_PRESETS[fmPresetKey]))
     } else {
       setAtmosphericParams(
         randomizeAtmosphericPreset(ATMOSPHERIC_PRESETS[atmosphericPresetKey]),
       )
     }
     setSelectedEntryId(null)
-  }, [mode, percussivePresetKey, tonalPresetKey, atmosphericPresetKey])
+  }, [mode, percussivePresetKey, tonalPresetKey, fmPresetKey, atmosphericPresetKey])
 
   const handleMutate = useCallback(() => {
     if (mode === 'percussive') {
@@ -420,6 +454,10 @@ function App() {
     } else if (mode === 'tonal') {
       setTonalParams((prev) =>
         mutateTonalPreset(TONAL_PRESETS[tonalPresetKey], prev, mutateDistance),
+      )
+    } else if (mode === 'fm') {
+      setFmParams((prev) =>
+        mutateFmPreset(FM_PRESETS[fmPresetKey], prev, mutateDistance),
       )
     } else {
       setAtmosphericParams((prev) =>
@@ -435,6 +473,7 @@ function App() {
     mode,
     percussivePresetKey,
     tonalPresetKey,
+    fmPresetKey,
     atmosphericPresetKey,
     mutateDistance,
   ])
@@ -450,11 +489,16 @@ function App() {
       const patterned = applyPattern(synthesized, percussivePattern, getAudioContext())
       const final = await applyFXToBuffer(patterned, percussiveFX)
       return { buffer: final, label: PRESETS[percussivePresetKey].name }
-    } else {
+    } else if (mode === 'tonal') {
       const synthesized = await renderTonal(tonalParams)
       const patterned = applyPattern(synthesized, tonalPattern, getAudioContext())
       const final = await applyFXToBuffer(patterned, tonalFX)
       return { buffer: final, label: TONAL_PRESETS[tonalPresetKey].name }
+    } else {
+      // mode === 'fm' (atmospheric is gated upstream by handleAtmosphericToggle).
+      const synthesized = await renderFm(fmParams)
+      const final = await applyFXToBuffer(synthesized, fmFX)
+      return { buffer: final, label: FM_PRESETS[fmPresetKey].name }
     }
   }, [
     mode,
@@ -466,6 +510,9 @@ function App() {
     tonalPresetKey,
     tonalPattern,
     tonalFX,
+    fmParams,
+    fmPresetKey,
+    fmFX,
   ])
 
   const handleAtmosphericToggle = useCallback(() => {
@@ -569,6 +616,7 @@ function App() {
   }, [
     percussiveParams,
     tonalParams,
+    fmParams,
     percussivePattern,
     tonalPattern,
     mode,
@@ -675,7 +723,7 @@ function App() {
         params: percussiveParams,
         pattern: percussivePattern.enabled ? percussivePattern : undefined,
       })
-    } else {
+    } else if (mode === 'tonal') {
       preset = tonalPresetKey
       if (!rendered) {
         const synthesized = await renderTonal(tonalParams)
@@ -685,6 +733,16 @@ function App() {
         preset: tonalPresetKey as TonalPreset,
         params: tonalParams,
         pattern: tonalPattern.enabled ? tonalPattern : undefined,
+      })
+    } else {
+      // mode === 'fm'
+      preset = fmPresetKey
+      if (!rendered) {
+        rendered = await renderFm(fmParams)
+      }
+      spec = serializeFmSpec({
+        preset: fmPresetKey as FmPresetSpec,
+        params: fmParams,
       })
     }
 
@@ -709,7 +767,9 @@ function App() {
       setBufferLabel(
         mode === 'percussive'
           ? PRESETS[percussivePresetKey].name
-          : TONAL_PRESETS[tonalPresetKey].name,
+          : mode === 'tonal'
+            ? TONAL_PRESETS[tonalPresetKey].name
+            : FM_PRESETS[fmPresetKey].name,
       )
     }
   }, [
@@ -723,6 +783,8 @@ function App() {
     tonalParams,
     tonalPresetKey,
     tonalPattern,
+    fmParams,
+    fmPresetKey,
     library.entries,
   ])
 
@@ -761,6 +823,18 @@ function App() {
         setTonalPresetKey(entry.preset as TonalPresetKey)
       }
       setTonalPattern(entry.spec.pattern ?? DEFAULT_PATTERN)
+    } else if (entry.spec.mode === 'fm') {
+      setMode('fm')
+      setFmParams({
+        ...entry.spec.params,
+        op1: { ...entry.spec.params.op1 },
+        op2: { ...entry.spec.params.op2 },
+        op3: { ...entry.spec.params.op3 },
+        op4: { ...entry.spec.params.op4 },
+      })
+      if (entry.preset !== 'custom' && FM_PRESETS[entry.preset as FmPresetKey]) {
+        setFmPresetKey(entry.preset as FmPresetKey)
+      }
     } else {
       // atmospheric
       setMode('atmospheric')
@@ -972,7 +1046,11 @@ function App() {
     } else {
       b = (await renderSourceSound()).buffer
       const presetName =
-        mode === 'percussive' ? percussivePresetKey : tonalPresetKey
+        mode === 'percussive'
+          ? percussivePresetKey
+          : mode === 'tonal'
+            ? tonalPresetKey
+            : fmPresetKey
       nameBase = nextNameForPreset(
         presetName,
         library.entries.map((e) => e.name),
@@ -988,6 +1066,7 @@ function App() {
     mode,
     percussivePresetKey,
     tonalPresetKey,
+    fmPresetKey,
   ])
 
   const handleExportJson = useCallback(() => {
@@ -1038,6 +1117,13 @@ function App() {
         pattern: tonalPattern.enabled ? tonalPattern : undefined,
         name,
       })
+    } else if (mode === 'fm') {
+      name = nextNameForPreset(fmPresetKey, existingNames)
+      spec = serializeFmSpec({
+        preset: fmPresetKey as FmPresetSpec,
+        params: fmParams,
+        name,
+      })
     } else {
       // atmospheric
       name = nextNameForPreset(atmosphericPresetKey, existingNames)
@@ -1063,6 +1149,8 @@ function App() {
     tonalParams,
     tonalPresetKey,
     tonalPattern,
+    fmParams,
+    fmPresetKey,
     atmosphericParams,
     atmosphericPresetKey,
     library.entries,
@@ -1202,18 +1290,26 @@ function App() {
             name: TONAL_PRESETS[k].name,
             description: TONAL_PRESETS[k].description,
           }))
-        : ATMOSPHERIC_PRESET_ORDER.map((k) => ({
-            key: k,
-            name: ATMOSPHERIC_PRESETS[k].name,
-            description: ATMOSPHERIC_PRESETS[k].description,
-          }))
+        : mode === 'fm'
+          ? FM_PRESET_ORDER.map((k) => ({
+              key: k,
+              name: FM_PRESETS[k].name,
+              description: FM_PRESETS[k].description,
+            }))
+          : ATMOSPHERIC_PRESET_ORDER.map((k) => ({
+              key: k,
+              name: ATMOSPHERIC_PRESETS[k].name,
+              description: ATMOSPHERIC_PRESETS[k].description,
+            }))
 
   const selectedPresetKey =
     mode === 'percussive'
       ? percussivePresetKey
       : mode === 'tonal'
         ? tonalPresetKey
-        : atmosphericPresetKey
+        : mode === 'fm'
+          ? fmPresetKey
+          : atmosphericPresetKey
 
   return (
     <div className="crt-overlay h-full flex flex-col" style={{ background: '#06080a', color: '#d4ecdc' }}>
@@ -1269,18 +1365,22 @@ function App() {
           headerLabel={
             mode === 'tonal'
               ? 'TONAL PRESETS'
-              : mode === 'atmospheric'
-                ? 'ATMOSPHERIC PRESETS'
-                : 'PERCUSSIVE PRESETS'
+              : mode === 'fm'
+                ? 'FM PRESETS'
+                : mode === 'atmospheric'
+                  ? 'ATMOSPHERIC PRESETS'
+                  : 'PERCUSSIVE PRESETS'
           }
         />
         <ParameterPanel
           mode={mode}
           percussiveParams={percussiveParams}
           tonalParams={tonalParams}
+          fmParams={fmParams}
           atmosphericParams={atmosphericParams}
           onPercussiveChange={handlePercussiveParamChange}
           onTonalChange={handleTonalParamChange}
+          onFmChange={handleFmParamChange}
           onAtmosphericChange={handleAtmosphericParamChange}
           percussivePattern={percussivePattern}
           tonalPattern={tonalPattern}
@@ -1291,14 +1391,18 @@ function App() {
               ? percussiveFX
               : mode === 'tonal'
                 ? tonalFX
-                : atmosphericFX
+                : mode === 'fm'
+                  ? fmFX
+                  : atmosphericFX
           }
           onFXChange={
             mode === 'percussive'
               ? setPercussiveFX
               : mode === 'tonal'
                 ? setTonalFX
-                : setAtmosphericFX
+                : mode === 'fm'
+                  ? setFmFX
+                  : setAtmosphericFX
           }
         />
         <div className="flex flex-col min-h-0" style={{ borderLeft: '1px solid #122418' }}>

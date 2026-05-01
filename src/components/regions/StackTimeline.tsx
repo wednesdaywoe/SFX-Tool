@@ -177,7 +177,7 @@ function estimateLayerDuration(
   if (sourceEntry.spec.mode === 'percussive') {
     return sourceEntry.spec.params.decay_ms + 50
   }
-  if (sourceEntry.spec.mode === 'tonal') {
+  if (sourceEntry.spec.mode === 'tonal' || sourceEntry.spec.mode === 'fm') {
     const p = sourceEntry.spec.params
     return Math.min(
       4000,

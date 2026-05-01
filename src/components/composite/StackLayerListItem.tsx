@@ -151,7 +151,7 @@ export function StackLayerListItem({
 function ModeTag({
   mode,
 }: {
-  mode: 'percussive' | 'tonal' | 'atmospheric' | null
+  mode: 'percussive' | 'tonal' | 'fm' | 'atmospheric' | null
 }) {
   if (mode === null) {
     return (
@@ -176,7 +176,10 @@ function ModeTag({
     )
   }
   const letter =
-    mode === 'percussive' ? 'P' : mode === 'tonal' ? 'T' : 'A'
+    mode === 'percussive' ? 'P'
+      : mode === 'tonal' ? 'T'
+      : mode === 'fm' ? 'F'
+      : 'A'
   return <span className={`mode-tag ${letter}`}>{letter}</span>
 }
 

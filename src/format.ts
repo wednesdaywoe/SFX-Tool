@@ -1,4 +1,5 @@
 import type { AtmosphericParams } from './dsp/atmospheric/types'
+import type { FmOperator, FmParams } from './dsp/fm/types'
 import type { PercussiveParams, TonalParams } from './dsp/types'
 
 export function formatHz(value: number): string {
@@ -76,6 +77,39 @@ export const TONAL_EDIT_LIMITS: Partial<
   filter_env_amount: [-2, 2],
   filter_env_attack_ms: [0, 2000],
   filter_env_decay_ms: [0, 5000],
+  amp_attack_ms: [0, 2000],
+  amp_decay_ms: [0, 5000],
+  amp_sustain: [0, 2],
+  amp_release_ms: [0, 5000],
+  pitch_env_amount_oct: [-4, 4],
+  pitch_env_attack_ms: [0, 2000],
+  pitch_env_decay_ms: [0, 5000],
+  lfo_rate_hz: [0.01, 50],
+  lfo_depth: [0, 2],
+  gain: [0, 4],
+}
+
+// FM edit limits — same principle: typed input wider than slider range.
+// Operator edit limits are shared (every op has identical bounds).
+export const FM_OPERATOR_EDIT_LIMITS: Partial<
+  Record<keyof FmOperator, [number, number]>
+> = {
+  ratio: [0.01, 64],
+  fixed_freq_hz: [0.1, 22050],
+  detune_cents: [-1200, 1200],
+  level: [0, 4],
+  env_attack_ms: [0, 5000],
+  env_decay_ms: [0, 10000],
+  env_sustain: [0, 2],
+  env_release_ms: [0, 10000],
+}
+
+export const FM_EDIT_LIMITS: Partial<Record<keyof FmParams, [number, number]>> = {
+  base_pitch_semitones: [-48, 48],
+  fm_amount: [0, 50],
+  feedback: [0, 2],
+  filter_freq_hz: [20, 22050],
+  filter_q: [0.1, 100],
   amp_attack_ms: [0, 2000],
   amp_decay_ms: [0, 5000],
   amp_sustain: [0, 2],

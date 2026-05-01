@@ -20,6 +20,12 @@ import type {
   SlowEnvTarget,
 } from './dsp/atmospheric/types'
 import type {
+  FmAlgorithm,
+  FmLfoTarget,
+  FmOperator,
+  FmParams,
+} from './dsp/fm/types'
+import type {
   PatternConfig,
   PatternDirection,
 } from './dsp/pattern/types'
@@ -27,6 +33,8 @@ import { PRESETS } from './presets'
 import type { PresetKey } from './presets'
 import { TONAL_PRESETS } from './presets-tonal'
 import type { TonalPresetKey } from './presets-tonal'
+import { FM_PRESETS } from './presets-fm'
+import type { FmPresetKey } from './presets-fm'
 import { ATMOSPHERIC_PRESETS } from './presets-atmospheric'
 import type { AtmosphericPresetKey } from './presets-atmospheric'
 
@@ -40,6 +48,7 @@ export const TOOL_VERSION = '3.0.0'
 
 export type PercussivePreset = PresetKey | 'custom'
 export type TonalPreset = TonalPresetKey | 'custom'
+export type FmPreset = FmPresetKey | 'custom'
 export type AtmosphericPreset = AtmosphericPresetKey | 'custom'
 
 export interface SpecMetadata {
@@ -86,7 +95,16 @@ export interface AtmosphericSpec {
   metadata?: SpecMetadata
 }
 
-export type SoundSpec = PercussiveSpec | TonalSpec | AtmosphericSpec
+export interface FmSpec {
+  version: string
+  kind: 'sound'
+  mode: 'fm'
+  preset: FmPreset
+  params: FmParams
+  metadata?: SpecMetadata
+}
+
+export type SoundSpec = PercussiveSpec | TonalSpec | FmSpec | AtmosphericSpec
 
 // Stack spec: a composition of layers, each referring to a SoundSpec by ID
 // (compact mode) or inline (flattened mode).
@@ -126,6 +144,15 @@ export interface SerializeTonalOptions {
   preset: TonalPreset
   params: TonalParams
   pattern?: PatternConfig
+  name?: string
+  created?: string
+  modified?: string
+  extraMetadata?: Record<string, unknown>
+}
+
+export interface SerializeFmOptions {
+  preset: FmPreset
+  params: FmParams
   name?: string
   created?: string
   modified?: string
@@ -183,6 +210,27 @@ export function serializeTonalSpec(
     params: { ...opts.params },
     ...(opts.pattern ? { pattern: clonePattern(opts.pattern) } : {}),
     metadata: buildMetadata(opts),
+  }
+}
+
+export function serializeFmSpec(opts: SerializeFmOptions): FmSpec {
+  return {
+    version: SPEC_VERSION,
+    kind: 'sound',
+    mode: 'fm',
+    preset: opts.preset,
+    params: cloneFmParams(opts.params),
+    metadata: buildMetadata(opts),
+  }
+}
+
+function cloneFmParams(p: FmParams): FmParams {
+  return {
+    ...p,
+    op1: { ...p.op1 },
+    op2: { ...p.op2 },
+    op3: { ...p.op3 },
+    op4: { ...p.op4 },
   }
 }
 
@@ -267,6 +315,9 @@ export function parseSoundSpec(input: unknown): ParseResult<SoundSpec> {
   }
   if (input.mode === 'tonal') {
     return parseTonalSpec(input) as ParseResult<SoundSpec>
+  }
+  if (input.mode === 'fm') {
+    return parseFmSpec(input) as ParseResult<SoundSpec>
   }
   if (input.mode === 'atmospheric') {
     return parseAtmosphericSpec(input) as ParseResult<SoundSpec>
@@ -528,6 +579,254 @@ export function parseTonalSpec(input: unknown): ParseResult<TonalSpec> {
       preset,
       params,
       ...(pattern ? { pattern } : {}),
+      metadata,
+    },
+    warnings,
+  }
+}
+
+// ----- FM spec parsing -----
+
+const FM_LFO_SHAPES = new Set<LfoShape>(['sine', 'triangle', 'square'])
+const FM_LFO_TARGETS = new Set<FmLfoTarget>([
+  'off',
+  'pitch',
+  'amp',
+  'fm',
+  'filter',
+])
+const FM_FILTER_VALUES = new Set<FilterType>([
+  'highpass',
+  'bandpass',
+  'lowpass',
+])
+const FM_ALGORITHMS = new Set<FmAlgorithm>([1, 2, 3, 4, 5, 6, 7, 8])
+
+const FM_TOP_NUMERIC_RANGES: Record<
+  Exclude<
+    keyof FmParams,
+    'op1' | 'op2' | 'op3' | 'op4' | 'algorithm' | 'filter_type' | 'lfo_shape' | 'lfo_target'
+  >,
+  [number, number]
+> = {
+  base_pitch_semitones: [-48, 48],
+  fm_amount: [0, 50],
+  feedback: [0, 2],
+  filter_freq_hz: [20, 22050],
+  filter_q: [0.1, 100],
+  amp_attack_ms: [0, 5000],
+  amp_decay_ms: [0, 5000],
+  amp_sustain: [0, 2],
+  amp_release_ms: [0, 5000],
+  pitch_env_amount_oct: [-4, 4],
+  pitch_env_attack_ms: [0, 2000],
+  pitch_env_decay_ms: [0, 5000],
+  lfo_rate_hz: [0.01, 50],
+  lfo_depth: [0, 2],
+  gain: [0, 4],
+}
+
+const FM_OP_NUMERIC_RANGES: Record<
+  Exclude<keyof FmOperator, 'fixed'>,
+  [number, number]
+> = {
+  ratio: [0.01, 64],
+  fixed_freq_hz: [0.1, 22050],
+  detune_cents: [-1200, 1200],
+  level: [0, 4],
+  env_attack_ms: [0, 10000],
+  env_decay_ms: [0, 10000],
+  env_sustain: [0, 2],
+  env_release_ms: [0, 10000],
+}
+
+function parseFmOperator(
+  raw: unknown,
+  baseline: FmOperator,
+  warnings: string[],
+  label: string,
+): FmOperator {
+  if (!isObject(raw)) {
+    warnings.push(`\`${label}\` missing or not an object — using preset default`)
+    return { ...baseline }
+  }
+  const out: FmOperator = { ...baseline }
+  out.fixed = typeof raw.fixed === 'boolean' ? raw.fixed : baseline.fixed
+
+  for (const [key, [min, max]] of Object.entries(FM_OP_NUMERIC_RANGES)) {
+    const k = key as keyof typeof FM_OP_NUMERIC_RANGES
+    const v = raw[k]
+    if (v === undefined) {
+      warnings.push(
+        `Missing \`${label}.${k}\` — using preset default ${baseline[k]}`,
+      )
+      continue
+    }
+    if (typeof v !== 'number' || !Number.isFinite(v)) {
+      warnings.push(
+        `Field \`${label}.${k}\` is not a finite number — using preset default ${baseline[k]}`,
+      )
+      continue
+    }
+    if (v < min || v > max) {
+      const clamped = Math.max(min, Math.min(max, v))
+      warnings.push(
+        `\`${label}.${k}\` value ${v} out of range [${min}, ${max}] — clamped to ${clamped}`,
+      )
+      out[k] = clamped
+    } else {
+      out[k] = v
+    }
+  }
+  return out
+}
+
+function parseFmParams(
+  raw: Record<string, unknown>,
+  baseline: FmParams,
+  warnings: string[],
+): FmParams {
+  const out: FmParams = {
+    ...baseline,
+    op1: { ...baseline.op1 },
+    op2: { ...baseline.op2 },
+    op3: { ...baseline.op3 },
+    op4: { ...baseline.op4 },
+  }
+
+  out.filter_type = parseEnumField(
+    raw,
+    'filter_type',
+    FM_FILTER_VALUES,
+    baseline.filter_type,
+    warnings,
+  )
+  out.lfo_shape = parseEnumField(
+    raw,
+    'lfo_shape',
+    FM_LFO_SHAPES,
+    baseline.lfo_shape,
+    warnings,
+  )
+  out.lfo_target = parseEnumField(
+    raw,
+    'lfo_target',
+    FM_LFO_TARGETS,
+    baseline.lfo_target,
+    warnings,
+  )
+
+  if (typeof raw.algorithm === 'number' && FM_ALGORITHMS.has(raw.algorithm as FmAlgorithm)) {
+    out.algorithm = raw.algorithm as FmAlgorithm
+  } else {
+    warnings.push(
+      `Missing or invalid \`algorithm\` — using preset default ${baseline.algorithm}`,
+    )
+  }
+
+  for (const [key, [min, max]] of Object.entries(FM_TOP_NUMERIC_RANGES)) {
+    const k = key as keyof typeof FM_TOP_NUMERIC_RANGES
+    const v = raw[k]
+    if (v === undefined) {
+      warnings.push(`Missing \`${k}\` — using preset default ${baseline[k]}`)
+      continue
+    }
+    if (typeof v !== 'number' || !Number.isFinite(v)) {
+      warnings.push(
+        `Field \`${k}\` is not a finite number — using preset default ${baseline[k]}`,
+      )
+      continue
+    }
+    if (v < min || v > max) {
+      const clamped = Math.max(min, Math.min(max, v))
+      warnings.push(
+        `\`${k}\` value ${v} out of range [${min}, ${max}] — clamped to ${clamped}`,
+      )
+      out[k] = clamped
+    } else {
+      out[k] = v
+    }
+  }
+
+  out.op1 = parseFmOperator(raw.op1, baseline.op1, warnings, 'op1')
+  out.op2 = parseFmOperator(raw.op2, baseline.op2, warnings, 'op2')
+  out.op3 = parseFmOperator(raw.op3, baseline.op3, warnings, 'op3')
+  out.op4 = parseFmOperator(raw.op4, baseline.op4, warnings, 'op4')
+
+  const known = new Set<string>([
+    'algorithm',
+    'op1',
+    'op2',
+    'op3',
+    'op4',
+    'filter_type',
+    'lfo_shape',
+    'lfo_target',
+    ...Object.keys(FM_TOP_NUMERIC_RANGES),
+  ])
+  for (const k of Object.keys(raw)) {
+    if (!known.has(k)) warnings.push(`Unknown params field "${k}" — ignored`)
+  }
+
+  return out
+}
+
+export function parseFmSpec(input: unknown): ParseResult<FmSpec> {
+  const warnings: string[] = []
+
+  if (!isObject(input)) {
+    throw new SpecParseError('Spec must be a JSON object')
+  }
+  if (typeof input.version !== 'string') {
+    throw new SpecParseError('Missing or invalid `version`')
+  }
+  if (input.mode !== 'fm') {
+    throw new SpecParseError(
+      `Expected mode "fm", got "${String(input.mode)}"`,
+    )
+  }
+  if (!isObject(input.params)) {
+    throw new SpecParseError('Missing `params`')
+  }
+
+  const knownPresets = new Set<FmPreset>([
+    ...(Object.keys(FM_PRESETS) as FmPresetKey[]),
+    'custom',
+  ])
+  let preset: FmPreset = 'custom'
+  if (typeof input.preset === 'string') {
+    if (knownPresets.has(input.preset as FmPreset)) {
+      preset = input.preset as FmPreset
+    } else {
+      warnings.push(
+        `Unknown FM preset "${input.preset}" — treating as "custom"`,
+      )
+    }
+  } else {
+    warnings.push('Missing `preset` — treating as "custom"')
+  }
+
+  const baseline =
+    preset === 'custom' ? FM_PRESETS.bell.defaults : FM_PRESETS[preset].defaults
+
+  const params = parseFmParams(input.params, baseline, warnings)
+
+  let metadata: SpecMetadata | undefined
+  if (input.metadata !== undefined) {
+    if (isObject(input.metadata)) {
+      metadata = { ...input.metadata } as SpecMetadata
+    } else {
+      warnings.push('`metadata` is not an object — ignored')
+    }
+  }
+
+  return {
+    spec: {
+      version: SPEC_VERSION,
+      kind: 'sound',
+      mode: 'fm',
+      preset,
+      params,
       metadata,
     },
     warnings,

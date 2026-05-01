@@ -32,7 +32,7 @@ interface AuditionRowProps {
   isPlaying: boolean
 
   // Atmospheric mode (live playback)
-  mode: 'percussive' | 'tonal' | 'atmospheric'
+  mode: 'percussive' | 'tonal' | 'fm' | 'atmospheric'
   atmosphericPlaying: boolean
   atmosphericAnalyser: AnalyserNode | null
   onAtmosphericToggle: () => void

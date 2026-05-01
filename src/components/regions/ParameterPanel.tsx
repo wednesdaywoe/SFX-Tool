@@ -1,4 +1,5 @@
 import type { AtmosphericParams } from '../../dsp/atmospheric/types'
+import type { FmParams } from '../../dsp/fm/types'
 import type { FXConfig } from '../../dsp/fx/types'
 import type { PercussiveParams, TonalParams } from '../../dsp/types'
 import type { PatternConfig } from '../../dsp/pattern/types'
@@ -6,6 +7,7 @@ import {
   AtmosphericPanel,
   ATMOSPHERIC_SIGNAL_FLOW,
 } from './ParameterPanel/Atmospheric'
+import { FmPanel, FM_SIGNAL_FLOW } from './ParameterPanel/Fm'
 import {
   PercussivePanel,
   PERCUSSIVE_SIGNAL_FLOW,
@@ -14,9 +16,10 @@ import { TonalPanel, TONAL_SIGNAL_FLOW } from './ParameterPanel/Tonal'
 import { FXPanel } from './FXPanel'
 
 interface ParameterPanelProps {
-  mode: 'percussive' | 'tonal' | 'atmospheric'
+  mode: 'percussive' | 'tonal' | 'fm' | 'atmospheric'
   percussiveParams: PercussiveParams
   tonalParams: TonalParams
+  fmParams: FmParams
   atmosphericParams: AtmosphericParams
   onPercussiveChange: <K extends keyof PercussiveParams>(
     key: K,
@@ -26,6 +29,7 @@ interface ParameterPanelProps {
     key: K,
     value: TonalParams[K],
   ) => void
+  onFmChange: <K extends keyof FmParams>(key: K, value: FmParams[K]) => void
   onAtmosphericChange: <K extends keyof AtmosphericParams>(
     key: K,
     value: AtmosphericParams[K],
@@ -42,9 +46,11 @@ export function ParameterPanel({
   mode,
   percussiveParams,
   tonalParams,
+  fmParams,
   atmosphericParams,
   onPercussiveChange,
   onTonalChange,
+  onFmChange,
   onAtmosphericChange,
   percussivePattern,
   tonalPattern,
@@ -58,7 +64,9 @@ export function ParameterPanel({
       ? PERCUSSIVE_SIGNAL_FLOW
       : mode === 'tonal'
         ? TONAL_SIGNAL_FLOW
-        : ATMOSPHERIC_SIGNAL_FLOW
+        : mode === 'fm'
+          ? FM_SIGNAL_FLOW
+          : ATMOSPHERIC_SIGNAL_FLOW
   // FX is the second-to-last stage; insert before OUT.
   const stages = [...baseStages.slice(0, -1), 'FX', baseStages[baseStages.length - 1]]
 
@@ -91,6 +99,8 @@ export function ParameterPanel({
             pattern={tonalPattern}
             onPatternChange={onTonalPatternChange}
           />
+        ) : mode === 'fm' ? (
+          <FmPanel params={fmParams} onChange={onFmChange} />
         ) : (
           <AtmosphericPanel
             params={atmosphericParams}
@@ -106,6 +116,8 @@ export function ParameterPanel({
 const STAGE_COLORS: Record<string, string> = {
   SOURCES: '#4dd0ff',
   SOURCE: '#4dd0ff',
+  ALGORITHM: '#4dd0ff',
+  OPERATORS: '#4dd0ff',
   FILTER: '#ffb84d',
   FILTERS: '#ffb84d',
   ENV: '#ff4dcc',
